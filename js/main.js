@@ -429,6 +429,8 @@
       });
     }
 
+    // As fontes mudam a altura dos textos: recalcula as cenas fixadas quando chegarem
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { ST.refresh(); });
     window.addEventListener('load', function () { ST.refresh(); });
   }
 
