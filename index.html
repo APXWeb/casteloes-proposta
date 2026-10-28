@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Castelões — Cantina e Pizzaria desde 1924, no Brás</title>
+  <meta name="description" content="Desde 1924, no mesmo forno. A pizzaria mais antiga do Brasil em funcionamento, na Rua Jairo Góis, 126, Brás, São Paulo.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#17110d">
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:title" content="Castelões — desde 1924, no mesmo forno">
+  <meta property="og:description" content="Proposta de site para a pizzaria mais antiga do Brasil em funcionamento, no Brás.">
+  <meta property="og:url" content="https://apxweb.github.io/casteloes-proposta/">
+  <meta property="og:image" content="https://apxweb.github.io/casteloes-proposta/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Castelões, cantina e pizzaria desde 1924 no Brás">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://apxweb.github.io/casteloes-proposta/og-image.jpg">
+
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&display=swap">
+  <link rel="stylesheet" href="css/estilo.css">
+  <script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+  <a class="pular" href="#cardapio">Pular para o cardápio</a>
+
+  <!-- Barra fixa: endereço, horário e ligar sempre à mão -->
+  <header class="barra" id="topo">
+    <a class="barra__marca" href="#abertura" aria-label="Castelões, voltar ao início">
+      <span class="barra__nome">Castelões</span>
+      <span class="barra__ano">1924</span>
+    </a>
+
+    <nav class="barra__nav" id="menu" aria-label="Seções">
+      <a href="#origem">Origem</a>
+      <a href="#pizza">A pizza</a>
+      <a href="#cardapio">Cardápio</a>
+      <a href="#salao">Salão</a>
+      <a href="#visita">Visita</a>
+    </nav>
+
+    <a class="barra__info" href="#visita">
+      <span class="status" data-status><span class="status__ponto" aria-hidden="true"></span><span data-status-texto>Horário</span></span>
+      <span class="barra__end">R. Jairo Góis, 126, Brás</span>
+    </a>
+
+    <a class="botao botao--brasa barra__ligar" href="tel:+551132290542">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6.6 10.8a15.2 15.2 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.6a1 1 0 0 1-.25 1z"/></svg>
+      <span>Ligar <span class="barra__tel">(11) 3229-0542</span></span>
+    </a>
+
+    <button class="barra__menu" type="button" aria-expanded="false" aria-controls="menu">
+      <span class="barra__menu-linhas" aria-hidden="true"></span>
+      <span class="sr">Abrir menu</span>
+    </button>
+  </header>
+
+  <main>
+    <!-- 1. Abertura -->
+    <section class="abertura" id="abertura" aria-labelledby="abertura-titulo">
+      <div class="abertura__palco">
+        <canvas class="abertura__brasas" aria-hidden="true"></canvas>
+        <div class="abertura__boca" aria-hidden="true"></div>
+
+        <h1 class="abertura__titulo" id="abertura-titulo">
+          <span class="abertura__nome" data-texto="Castelões">Castelões</span>
+          <span class="sr">, cantina e pizzaria desde 1924</span>
+        </h1>
+
+        <p class="abertura__ano" aria-hidden="true"><span data-texto="1924">1924</span></p>
+
+        <div class="abertura__rodape">
+          <p class="abertura__lema">Desde 1924, no mesmo forno.</p>
+          <p class="abertura__sub">Cantina e pizzaria no Brás, São Paulo. A pizzaria mais antiga do Brasil em funcionamento.</p>
+          <div class="abertura__acoes">
+            <a class="botao botao--creme" href="#cardapio">Ver o cardápio</a>
+            <a class="botao botao--linha" href="#visita">Como chegar</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 2. Origem -->
+    <section class="origem" id="origem" aria-labelledby="origem-titulo">
+      <div class="origem__grade">
+        <div class="origem__lateral">
+          <h2 class="origem__titulo" id="origem-titulo">Tudo terminava no salão.</h2>
+          <figure class="foto-antiga origem__foto" data-foto="origem">
+            <div class="foto-vazia"><span>Foto histórica da casa</span></div>
+          </figure>
+        </div>
+
+        <ol class="linha" aria-label="Linha do tempo da Castelões">
+          <li class="linha__item">
+            <p class="linha__marco">1924</p>
+            <h3 class="linha__titulo">Um napolitano e um calabrês no Brás</h3>
+            <p>Em 1º de outubro de 1924, Ettore Siniscalchi, de Nápoles, e Vicente Donato, da Calábria, fundam a casa no Brás, bairro operário e italiano de São Paulo.</p>
+          </li>
+          <li class="linha__item">
+            <p class="linha__marco">Depois do jogo</p>
+            <h3 class="linha__titulo">O salão dos jogadores</h3>
+            <p>Jogadores de futebol se reuniam no salão depois das partidas para conversar e petiscar. Foi dali que vieram as pizzas e o nome da casa.</p>
+          </li>
+          <li class="linha__item">
+            <p class="linha__marco">No mesmo forno</p>
+            <h3 class="linha__titulo">Tradição napolitana</h3>
+            <p>Forno a lenha, massa grossa e bordas volumosas. A receita atravessou as gerações da família Donato.</p>
+            <figure class="moldura moldura--arco origem__forno" data-foto="forno">
+              <div class="foto-vazia"><span>O forno a lenha</span></div>
+            </figure>
+          </li>
+          <li class="linha__item linha__item--hoje">
+            <p class="linha__marco">Hoje</p>
+            <h3 class="linha__titulo">Fábio Donato, terceira geração</h3>
+            <p>Mestre pizzaiolo, Fábio Donato comanda a casa e o forno que a família mantém aceso há um século.</p>
+            <figure class="moldura origem__fabio" data-foto="fabio">
+              <div class="foto-vazia"><span>Retrato de Fábio Donato</span></div>
+            </figure>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 3. Cena-assinatura: a Pizza Castelões montada pelo scroll -->
+    <section class="pizza" id="pizza" aria-labelledby="pizza-titulo">
+      <div class="pizza__palco">
+        <div class="pizza__cabeca">
+          <h2 class="pizza__titulo" id="pizza-titulo">Como nasce a Pizza Castelões</h2>
+          <p class="pizza__intro">O carro-chefe da casa, montado como sempre foi: o queijo vai antes do molho.</p>
+        </div>
+
+        <div class="pizza__visual">
+          <canvas class="pizza__canvas" role="img" aria-label="Ilustração da Pizza Castelões sendo montada: massa, muçarela, molho de tomate por cima, calabresa e forno a lenha."></canvas>
+        </div>
+
+        <ol class="passos">
+          <li class="passo" data-passo="0">
+            <h3>A massa</h3>
+            <div class="passo__texto"><p>Disco de massa grossa, aberto à mão, com a borda volumosa da tradição napolitana.</p></div>
+          </li>
+          <li class="passo passo--destaque" data-passo="1">
+            <h3>Primeiro, a muçarela</h3>
+            <div class="passo__texto"><p>Na Castelões, o queijo vai direto sobre a massa, antes de qualquer molho.</p></div>
+          </li>
+          <li class="passo" data-passo="2">
+            <h3>Depois, o molho</h3>
+            <div class="passo__texto"><p>O molho de tomate vem por cima do queijo. É o jeito da casa.</p></div>
+          </li>
+          <li class="passo" data-passo="3">
+            <h3>A calabresa</h3>
+            <div class="passo__texto"><p>Calabresa artesanal, cortada em rodelas, espalhada pela pizza inteira.</p></div>
+          </li>
+          <li class="passo" data-passo="4">
+            <h3>O forno a lenha</h3>
+            <div class="passo__texto"><p>Lenha, brasa e o mesmo forno de sempre douram a borda e derretem o queijo.</p></div>
+          </li>
+        </ol>
+
+        <div class="pizza__barra" aria-hidden="true"><span></span></div>
+      </div>
+    </section>
+
+    <!-- 4. Acabar em pizza -->
+    <section class="expressao" id="expressao" aria-labelledby="expressao-titulo">
+      <div class="expressao__grade">
+        <h2 class="expressao__frase" id="expressao-titulo">
+          <span class="expressao__linha">E tudo</span>
+          <span class="expressao__linha">acabou em pizza.</span>
+        </h2>
+        <p class="expressao__texto">A expressão “acabar em pizza” é associada à Castelões. Faz sentido: aqui, até as conversas de futebol terminavam à mesa.</p>
+      </div>
+    </section>
+
+    <!-- 5. Cardápio -->
+    <section class="cardapio" id="cardapio" aria-labelledby="cardapio-titulo">
+      <div class="cardapio__grade">
+        <header class="cardapio__cabeca">
+          <h2 class="cardapio__titulo" id="cardapio-titulo">Cardápio</h2>
+          <p class="cardapio__aviso">Preços e disponibilidade podem mudar. Confirme com a casa pelo <a href="tel:+551132290542">(11) 3229-0542</a>.</p>
+        </header>
+
+        <article class="carro-chefe">
+          <figure class="moldura moldura--arco carro-chefe__foto" data-foto="pizza-casteloes">
+            <div class="foto-vazia"><span>Foto da Pizza Castelões</span></div>
+          </figure>
+          <div class="carro-chefe__texto">
+            <p class="carro-chefe__selo">O carro-chefe</p>
+            <h3 class="carro-chefe__nome">Pizza Castelões</h3>
+            <p class="carro-chefe__desc">Muçarela, calabresa artesanal em rodelas e molho de tomate. O queijo vai antes do molho, na tradição da casa.</p>
+            <p class="preco" data-preco="pizza-casteloes"></p>
+          </div>
+        </article>
+
+        <div class="cardapio__lista">
+          <h3 class="cardapio__grupo">Pizzas clássicas</h3>
+          <ul class="itens">
+            <li class="item">
+              <span class="item__nome">Margherita</span>
+              <span class="item__guia" aria-hidden="true"></span>
+              <span class="preco" data-preco="margherita"></span>
+            </li>
+            <li class="item">
+              <span class="item__nome">Napolitana</span>
+              <span class="item__guia" aria-hidden="true"></span>
+              <span class="preco" data-preco="napolitana"></span>
+              <span class="item__desc">Muçarela, rodelas de tomate e alho.</span>
+            </li>
+            <li class="item">
+              <span class="item__nome">Escarola</span>
+              <span class="item__guia" aria-hidden="true"></span>
+              <span class="preco" data-preco="escarola"></span>
+            </li>
+            <li class="item">
+              <span class="item__nome">Aliche</span>
+              <span class="item__guia" aria-hidden="true"></span>
+              <span class="preco" data-preco="aliche"></span>
+            </li>
+          </ul>
+
+          <h3 class="cardapio__grupo">Da cantina</h3>
+          <ul class="itens">
+            <li class="item">
+              <span class="item__nome">Espaguete Castelões</span>
+              <span class="item__guia" aria-hidden="true"></span>
+              <span class="preco" data-preco="espaguete-casteloes"></span>
+            </li>
+          </ul>
+
+          <p class="cardapio__delivery">Delivery somente pelos aplicativos de entrega. Para comer no salão, é só chegar.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. O salão -->
+    <section class="salao" id="salao" aria-labelledby="salao-titulo">
+      <div class="salao__grade">
+        <header class="salao__cabeca">
+          <h2 class="salao__titulo" id="salao-titulo">O salão</h2>
+          <p class="salao__texto">Dois ambientes, de 60 a 80 lugares, com o clima de casa de família que o Brás conhece há um século.</p>
+        </header>
+
+        <div class="galeria">
+          <figure class="moldura galeria__a" data-foto="salao-1"><div class="foto-vazia"><span>Salão, vista ampla</span></div></figure>
+          <figure class="moldura galeria__b" data-foto="salao-2"><div class="foto-vazia"><span>Detalhe das paredes</span></div></figure>
+          <figure class="moldura galeria__c" data-foto="salao-3"><div class="foto-vazia"><span>Mesas postas</span></div></figure>
+          <figure class="moldura galeria__d" data-foto="salao-4"><div class="foto-vazia"><span>Forno a lenha</span></div></figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Visita -->
+    <section class="visita" id="visita" aria-labelledby="visita-titulo">
+      <div class="visita__grade">
+        <div class="visita__info">
+          <h2 class="visita__titulo" id="visita-titulo">Venha jantar no Brás</h2>
+
+          <address class="visita__endereco">
+            <span class="visita__rua">Rua Jairo Góis, 126</span>
+            <span>Brás, São Paulo, SP, 03004-010</span>
+          </address>
+
+          <div class="visita__acoes">
+            <a class="botao botao--brasa" href="tel:+551132290542">Ligar (11) 3229-0542</a>
+            <a class="botao botao--linha" data-rota href="https://www.google.com/maps/dir/?api=1&amp;destination=Rua+Jairo+G%C3%B3is%2C+126%2C+Br%C3%A1s%2C+S%C3%A3o+Paulo" target="_blank" rel="noopener">Traçar rota</a>
+          </div>
+
+          <div class="horario">
+            <h3 class="horario__titulo">Horário</h3>
+            <p class="status status--grande" data-status><span class="status__ponto" aria-hidden="true"></span><span data-status-texto></span></p>
+            <table class="horario__tabela">
+              <caption class="sr">Horário de funcionamento por dia da semana</caption>
+              <tbody data-horario-tabela></tbody>
+            </table>
+            <p class="horario__nota">Horário sujeito a confirmação. Na dúvida, ligue antes.</p>
+          </div>
+
+          <p class="visita__delivery">Delivery somente pelos aplicativos de entrega.</p>
+        </div>
+
+        <div class="mapa" data-mapa>
+          <div class="mapa__capa">
+            <figure class="mapa__foto" data-foto="fachada"></figure>
+            <p class="mapa__texto">Procure a placa de azulejo na entrada. O mapa do Google só carrega quando você pedir.</p>
+            <button class="botao botao--creme mapa__botao" type="button">Mostrar mapa</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    <div class="rodape__grade">
+      <p class="rodape__marca">Castelões</p>
+      <p class="rodape__lema">Desde 1924, no mesmo forno.</p>
+
+      <div class="rodape__colunas">
+        <div>
+          <h2 class="rodape__titulo">Endereço</h2>
+          <p>Rua Jairo Góis, 126<br>Brás, São Paulo, SP<br>03004-010</p>
+        </div>
+        <div>
+          <h2 class="rodape__titulo">Contato</h2>
+          <p><a href="tel:+551132290542">(11) 3229-0542</a><br><span data-horario-resumo></span></p>
+        </div>
+        <div class="rodape__creditos">
+          <h2 class="rodape__titulo">Créditos das fotos</h2>
+          <ul data-creditos><li>Fotos a adicionar.</li></ul>
+          <p>A ilustração da pizza foi desenhada para esta proposta.</p>
+        </div>
+      </div>
+
+      <p class="rodape__apx">Proposta de site desenvolvida pela <a href="https://apxweb.github.io/apex-web/" target="_blank" rel="noopener">APX Web</a>. Conceito, sem vínculo oficial com a Castelões.</p>
+    </div>
+  </footer>
+
+  <!-- Barra inferior no celular -->
+  <nav class="doca" aria-label="Ações rápidas">
+    <a class="doca__item doca__item--ligar" href="tel:+551132290542">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6.6 10.8a15.2 15.2 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.6a1 1 0 0 1-.25 1z"/></svg>
+      Ligar
+    </a>
+    <a class="doca__item" data-rota href="https://www.google.com/maps/dir/?api=1&amp;destination=Rua+Jairo+G%C3%B3is%2C+126%2C+Br%C3%A1s%2C+S%C3%A3o+Paulo" target="_blank" rel="noopener">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
+      Rota
+    </a>
+    <a class="doca__item" href="#cardapio">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 3h11a3 3 0 0 1 3 3v15H8a3 3 0 0 1-3-3zm3 4v2h8V7zm0 4v2h8v-2zm0 4v2h5v-2z"/></svg>
+      Cardápio
+    </a>
+  </nav>
+
+  <dialog class="ampliar" aria-label="Foto ampliada">
+    <button class="ampliar__fechar" type="button">Fechar</button>
+    <img alt="">
+    <p class="ampliar__legenda"></p>
+  </dialog>
+
+  <script src="js/config.js"></script>
+  <script src="js/fotos.js"></script>
+  <script src="vendor/gsap.min.js" defer></script>
+  <script src="vendor/ScrollTrigger.min.js" defer></script>
+  <script src="js/pizza.js" defer></script>
+  <script src="js/main.js" defer></script>
+</body>
+</html>
