@@ -326,127 +326,14 @@
     });
   }
 
-  /* ---------- Abertura: arco de tijolos da boca do forno ---------- */
-
-  function montarArco() {
-    var alvo = $('.abertura__boca');
-    if (!alvo) return;
-    var cx = 500, mola = 470, r = 330, t = 74;
-    var semente = 1924;
-    function rand() { semente = (semente * 16807) % 2147483647; return semente / 2147483647; }
-    function pt(raio, ang) { return (cx + Math.cos(ang) * raio).toFixed(1) + ' ' + (mola - Math.sin(ang) * raio).toFixed(1); }
-    var tijolos = [];
-    // Aduelas do arco
-    var n = 21, folga = 0.012;
-    for (var i = 0; i < n; i++) {
-      var a0 = Math.PI - (i / n) * Math.PI - folga;
-      var a1 = Math.PI - ((i + 1) / n) * Math.PI + folga;
-      tijolos.push('M' + pt(r, a0) + 'L' + pt(r + t, a0) + 'L' + pt(r + t, a1) + 'L' + pt(r, a1) + 'Z');
-    }
-    // Ombreiras: fiadas de tijolo dos dois lados
-    var altura = 38;
-    for (var y = mola, f = 0; y < 900; y += altura, f++) {
-      [cx - r - t, cx + r].forEach(function (x0) {
-        if (f % 2) {
-          tijolos.push('M' + (x0 + 2) + ' ' + (y + 2) + 'h' + (t / 2 - 3) + 'v' + (altura - 4) + 'h' + (3 - t / 2) + 'Z');
-          tijolos.push('M' + (x0 + t / 2 + 1) + ' ' + (y + 2) + 'h' + (t / 2 - 3) + 'v' + (altura - 4) + 'h' + (3 - t / 2) + 'Z');
-        } else {
-          tijolos.push('M' + (x0 + 2) + ' ' + (y + 2) + 'h' + (t - 4) + 'v' + (altura - 4) + 'h' + (4 - t) + 'Z');
-        }
-      });
-    }
-    var base = tijolos.map(function (d) {
-      return '<path d="' + d + '" fill="hsl(14 42% ' + (14 + Math.round(rand() * 10)) + '%)"/>';
-    }).join('');
-    var acesos = tijolos.map(function (d) { return '<path d="' + d + '"/>'; }).join('');
-    var abertura = 'M' + (cx - r) + ' 900V' + mola + 'A' + r + ' ' + r + ' 0 0 1 ' + (cx + r) + ' ' + mola + 'V900Z';
-    alvo.innerHTML =
-      '<svg viewBox="0 0 1000 900" preserveAspectRatio="xMidYMax meet">' +
-      '<defs>' +
-      '<radialGradient id="arcoFogo" cx="500" cy="900" r="520" gradientUnits="userSpaceOnUse">' +
-      '<stop offset="0" stop-color="#ffd9a0"/><stop offset=".22" stop-color="#ff9a45"/>' +
-      '<stop offset=".55" stop-color="#b8461a" stop-opacity=".55"/><stop offset="1" stop-color="#2a0f06" stop-opacity="0"/></radialGradient>' +
-      '<radialGradient id="arcoLuz" cx="500" cy="900" r="640" gradientUnits="userSpaceOnUse">' +
-      '<stop offset="0" stop-color="#ffb469" stop-opacity=".9"/><stop offset=".5" stop-color="#f07a2a" stop-opacity=".4"/>' +
-      '<stop offset="1" stop-color="#f07a2a" stop-opacity="0"/></radialGradient>' +
-      '</defs>' +
-      '<rect x="' + (cx - r - t - 6) + '" y="0" width="' + (2 * (r + t) + 12) + '" height="900" fill="none"/>' +
-      '<path d="' + abertura + '" fill="#080402"/>' +
-      '<g class="arco__fogo"><path class="arco__chama" d="' + abertura + '" fill="url(#arcoFogo)"/></g>' +
-      '<g>' + base + '</g>' +
-      '<g class="arco__aceso" fill="url(#arcoLuz)" style="mix-blend-mode:screen">' + acesos + '</g>' +
-      '</svg>';
-  }
-
-  /* ---------- Abertura: brasas subindo ---------- */
-
-  function brasas(canvas) {
-    var ctx = canvas.getContext('2d');
-    var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-    var w, h, particulas = [], ativo = true, quadro;
-    var total = telaCompacta.matches ? 18 : 46;
-
-    function medir() {
-      w = canvas.clientWidth; h = canvas.clientHeight;
-      canvas.width = w * dpr; canvas.height = h * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-    function nova(inicio) {
-      return {
-        x: w * (0.5 + (Math.random() - 0.5) * 0.5),
-        y: inicio ? h * (0.4 + Math.random() * 0.6) : h + 10,
-        vy: 0.35 + Math.random() * 0.9,
-        vx: (Math.random() - 0.5) * 0.3,
-        r: 0.6 + Math.random() * 1.8,
-        vida: 0,
-        max: 280 + Math.random() * 380,
-        fase: Math.random() * 6.28,
-      };
-    }
-    medir();
-    for (var i = 0; i < total; i++) particulas.push(nova(true));
-
-    function passo() {
-      ctx.clearRect(0, 0, w, h);
-      ctx.globalCompositeOperation = 'lighter';
-      for (var i = 0; i < particulas.length; i++) {
-        var p = particulas[i];
-        p.vida++;
-        p.y -= p.vy;
-        p.x += p.vx + Math.sin(p.vida * 0.02 + p.fase) * 0.35;
-        var t = p.vida / p.max;
-        if (t >= 1 || p.y < -10) { particulas[i] = nova(false); continue; }
-        var a = Math.sin(Math.PI * t) * 0.9;
-        ctx.fillStyle = 'rgba(255,' + Math.round(150 + 60 * (1 - t)) + ',70,' + a + ')';
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r * (1 - t * 0.5), 0, 6.283);
-        ctx.fill();
-      }
-      ctx.globalCompositeOperation = 'source-over';
-      if (ativo) quadro = requestAnimationFrame(passo);
-    }
-
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(function (en) {
-        ativo = en[0].isIntersecting;
-        cancelAnimationFrame(quadro);
-        if (ativo) quadro = requestAnimationFrame(passo);
-      }).observe(canvas);
-    } else {
-      quadro = requestAnimationFrame(passo);
-    }
-    window.addEventListener('resize', medir);
-  }
-
   /* ---------- Cenas com GSAP ---------- */
 
   function cenas() {
     var gsap = window.gsap, ST = window.ScrollTrigger;
-    var abertura = $('.abertura');
     var pizzaSecao = $('.pizza');
 
     if (!gsap || !ST || movimentoReduzido.matches) {
-      abertura.style.setProperty('--calor', 1);
+      raiz.classList.add('pronto');
       $('.linha').style.setProperty('--progresso', 1);
       $$('.linha__item').forEach(function (li) { li.classList.add('aceso'); });
       montarPizzaSimples(pizzaSecao);
@@ -455,31 +342,43 @@
     }
 
     gsap.registerPlugin(ST);
+    var saida = 'power3.out';
 
-    // 1. A brasa acende sozinha um pouco ao abrir e termina de acender com o scroll
-    var calor = { ignicao: 0, rolagem: 0 };
-    function aplicarCalor() {
-      abertura.style.setProperty('--calor', Math.min(1, calor.ignicao * (modoSimples ? 0.7 : 0.5) + calor.rolagem * (modoSimples ? 0.3 : 0.5)).toFixed(3));
-    }
-    gsap.to(calor, { ignicao: 1, duration: 1.8, ease: 'power2.out', delay: 0.15, onUpdate: aplicarCalor });
-    gsap.to(calor, {
-      rolagem: 1,
-      ease: 'none',
-      onUpdate: aplicarCalor,
-      scrollTrigger: modoSimples
-        ? { trigger: abertura, start: 'top top', end: '60% top', scrub: true }
-        : { trigger: abertura, start: 'top top', end: '+=70%', scrub: 0.5, pin: '.abertura__palco' },
-    });
+    // 1. Abertura: uma única entrada, curta. O nome sobe da máscara e a foto abre de baixo para cima.
+    var foto = $('.abertura__foto');
+    var entrada = gsap.timeline({ defaults: { ease: saida } });
+    entrada
+      .from('.abertura__local', { opacity: 0, y: 12, duration: 0.7 }, 0.1)
+      .from('.abertura__nome', { yPercent: 105, duration: 1.1 }, 0.15)
+      .from('.abertura__lema', { yPercent: 105, duration: 1 }, 0.3)
+      .from(['.abertura__sub', '.abertura__acoes'], { opacity: 0, y: 16, duration: 0.8, stagger: 0.08 }, 0.55)
+      .from(foto, { clipPath: 'inset(100% 0% 0% 0%)', duration: 1.3, ease: 'power3.inOut' }, 0)
+      .from($('img', foto) || foto, { scale: 1.12, duration: 1.8 }, 0);
+    raiz.classList.add('pronto');
+
+    // Ao sair da abertura, a foto desce devagar: profundidade, sem roubar a cena
     if (!modoSimples) {
-      gsap.to('.abertura__titulo', {
-        yPercent: -8,
+      gsap.to(foto, {
+        y: 70,
         ease: 'none',
-        scrollTrigger: { trigger: abertura, start: 'top top', end: '+=70%', scrub: 0.5 },
+        scrollTrigger: { trigger: '.abertura', start: 'top top', end: 'bottom top', scrub: true },
       });
     }
-    brasas($('.abertura__brasas'));
 
-    // 2. Linha do tempo acende conforme avança
+    // 2. Títulos de seção: sobem uma vez, quando chegam
+    $$('[data-revela]').forEach(function (el) {
+      gsap.from(el, { opacity: 0, y: 28, duration: 0.9, ease: saida, scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+    });
+
+    // Fotos principais: abrem de baixo para cima, com um leve recuo
+    $$('.carro-chefe__foto, .galeria__a, .galeria__b').forEach(function (fig) {
+      var tl = gsap.timeline({ scrollTrigger: { trigger: fig, start: 'top 85%', once: true } });
+      tl.from(fig, { clipPath: 'inset(100% 0% 0% 0%)', duration: 1.1, ease: 'power3.inOut' });
+      var img = $('img', fig);
+      if (img) tl.from(img, { scale: 1.1, duration: 1.4, ease: saida }, 0);
+    });
+
+    // 3. Linha do tempo acende conforme avança
     var linha = $('.linha');
     gsap.to(linha, {
       '--progresso': 1,
@@ -490,29 +389,26 @@
       ST.create({ trigger: li, start: 'top 72%', end: 'max', onToggle: function (st) { li.classList.toggle('aceso', st.isActive); } });
     });
 
-    // 3. Pizza
+    // 4. Pizza
     if (modoSimples) montarPizzaSimples(pizzaSecao);
     else montarPizzaScroll(pizzaSecao, gsap);
 
-    // 4. "Acabar em pizza": as linhas se preenchem como tinta
-    $$('.expressao__linha').forEach(function (linhaFrase, i) {
-      linhaFrase.style.setProperty('--preenche', 0);
-      gsap.to(linhaFrase, {
-        '--preenche': 1,
-        ease: 'none',
-        scrollTrigger: { trigger: linhaFrase, start: 'top ' + (88 - i * 6) + '%', end: 'top ' + (48 - i * 6) + '%', scrub: 0.3 },
-      });
-    });
+    // 5. "Acabar em pizza": as duas linhas sobem em sequência, depois o texto
+    var frase = gsap.timeline({ scrollTrigger: { trigger: '.expressao', start: 'top 70%', once: true } });
+    frase
+      .from('[data-frase]', { yPercent: 105, duration: 1, stagger: 0.14, ease: saida })
+      .from('.expressao__texto', { opacity: 0, y: 16, duration: 0.8, ease: saida }, 0.45);
 
-    // 6. Salão: leve paralaxe nas fotos menores
+    // 6. Salão: a foto larga se move um pouco dentro do quadro
     if (!modoSimples) {
-      [['.galeria__b', -8], ['.galeria__c', 6]].forEach(function (par) {
-        gsap.fromTo(par[0], { yPercent: 0 }, {
-          yPercent: par[1],
+      var largo = $('.galeria__c img');
+      if (largo) {
+        gsap.fromTo(largo, { yPercent: 0 }, {
+          yPercent: -13,
           ease: 'none',
-          scrollTrigger: { trigger: '.galeria', start: 'top bottom', end: 'bottom top', scrub: true },
+          scrollTrigger: { trigger: '.galeria__c', start: 'top bottom', end: 'bottom top', scrub: true },
         });
-      });
+      }
     }
 
     // As fontes mudam a altura dos textos: recalcula as cenas fixadas quando chegarem
@@ -579,7 +475,7 @@
       scrollTrigger: {
         trigger: secao,
         start: 'top top',
-        end: '+=420%',
+        end: '+=340%',
         pin: '.pizza__palco',
         scrub: 0.6,
         invalidateOnRefresh: true,
@@ -647,6 +543,5 @@
   montarAmpliar();
   montarMenu();
   montarMapa();
-  montarArco();
   cenas();
 })();
