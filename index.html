@@ -85,7 +85,7 @@
         <div class="abertura__boca" aria-hidden="true"></div>
 
         <h1 class="abertura__titulo" id="abertura-titulo">
-          <span class="abertura__nome">Castelões<span class="abertura__aceso" aria-hidden="true">Castelões</span></span>
+          <span class="abertura__nome" data-texto="Castelões">Castelões</span>
           <span class="sr">, cantina e pizzaria desde 1924</span>
         </h1>
 
@@ -152,9 +152,17 @@
           <p class="pizza__intro">O carro-chefe da casa, montado na tradição da Castelões: o queijo vai antes do molho.</p>
         </div>
 
-        <div class="pizza__visual">
-          <canvas class="pizza__canvas" role="img" aria-label="Ilustração da Pizza Castelões sendo montada: massa, muçarela, molho de tomate por cima, calabresa e forno a lenha."></canvas>
-        </div>
+        <figure class="pizza__visual">
+          <div class="pizza__quadro" role="img" aria-label="Fotos da montagem da Pizza Castelões na casa: bolas de massa, fatias de muçarela sobre a massa, molho de tomate por cima do queijo, rodelas de calabresa e a pizza saindo do forno a lenha.">
+            <img class="pizza__camada" data-camada="massa" src="img/etapa-massa.webp" width="720" height="900" alt="" decoding="async">
+            <img class="pizza__camada pizza__camada--quadrada" data-camada="montagem" src="img/etapa-montagem.webp" width="1080" height="1080" alt="" decoding="async">
+            <img class="pizza__camada" data-camada="fogo" src="img/forno-lenha.webp" width="720" height="900" alt="" decoding="async">
+            <img class="pizza__camada" data-camada="saindo" src="img/etapa-saindo.webp" width="720" height="900" alt="" decoding="async">
+            <p class="pizza__nota" data-nota="queijo" aria-hidden="true">Muçarela, direto na massa</p>
+            <p class="pizza__nota" data-nota="molho" aria-hidden="true">O molho, por cima do queijo</p>
+          </div>
+          <figcaption class="pizza__credito">Fotos: @cantina_casteloes no Instagram</figcaption>
+        </figure>
 
         <ol class="passos">
           <li class="passo" data-passo="0">
@@ -259,13 +267,13 @@
       <div class="salao__grade">
         <header class="salao__cabeca">
           <h2 class="salao__titulo" id="salao-titulo">O salão</h2>
-          <p class="salao__texto">Dois ambientes, de 60 a 80 lugares, com o clima de casa de família que o Brás conhece há um século.</p>
         </header>
 
         <div class="galeria">
           <figure class="moldura galeria__a" data-foto="salao-1"><div class="foto-vazia"><span>Salão, vista ampla</span></div></figure>
           <figure class="moldura galeria__b" data-foto="salao-2"><div class="foto-vazia"><span>O balcão de mármore</span></div></figure>
           <figure class="moldura galeria__c" data-foto="salao-3"><div class="foto-vazia"><span>Mesas postas</span></div></figure>
+          <p class="galeria__texto">Dois ambientes, de 60 a 80 lugares, com o clima de casa de família que o Brás conhece há um século.</p>
           <figure class="moldura galeria__d" data-foto="salao-4"><div class="foto-vazia"><span>O bar e suas paredes de garrafas</span></div></figure>
         </div>
       </div>
@@ -328,7 +336,6 @@
         <div class="rodape__creditos">
           <h2 class="rodape__titulo">Créditos das fotos</h2>
           <ul data-creditos><li>Fotos a adicionar.</li></ul>
-          <p>A ilustração da pizza foi desenhada para esta proposta.</p>
         </div>
       </div>
 
@@ -347,7 +354,6 @@
   <script src="js/fotos.js"></script>
   <script src="vendor/gsap.min.js" defer></script>
   <script src="vendor/ScrollTrigger.min.js" defer></script>
-  <script src="js/pizza.js" defer></script>
   <script src="js/main.js" defer></script>
 </body>
 </html>

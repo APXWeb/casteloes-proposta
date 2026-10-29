@@ -14,7 +14,7 @@ index.html          página única com as sete cenas
 css/estilo.css      tokens, layout e versões para celular e movimento reduzido
 js/config.js        HORÁRIO e PREÇOS: o único lugar para editar esses dados
 js/fotos.js         lista de fotos por espaço do site (caminho, descrição, crédito)
-js/pizza.js         ilustração da Pizza Castelões em canvas, montada pelo scroll
+                    (a cena da pizza usa fotos reais da casa em img/etapa-*.webp e img/pizza-etapa-*.webp)
 js/main.js          barra fixa, status aberto/fechado, cenas com GSAP, mapa sob demanda
 vendor/             GSAP 3.13 + ScrollTrigger (cópia local)
 img/                fotos e ícone
@@ -25,7 +25,7 @@ og-image.jpg        imagem de compartilhamento (1200×630)
 
 - **Horário:** `js/config.js` → `horario` (dias, abre, fecha). A barra do topo, o status "aberto agora", a tabela da seção Visita e o resumo do rodapé são gerados a partir daí.
 - **Telefone e endereço:** direto no `index.html` (barra, Visita, doca do celular e rodapé).
-- **Preços:** `js/config.js` → `precos`. Use números (ex.: `98` ou `104.5`). Enquanto o valor for `null`, o cardápio mostra "consulte".
+- **Preços:** `js/config.js` → `precos`. Use números (ex.: `98` ou `104.5`). Enquanto o valor for `null`, o item aparece sem preço e o aviso do cabeçalho do cardápio pede para confirmar com a casa.
 - **Fotos:** coloque o arquivo em `img/` e edite a entrada em `js/fotos.js`. Espaços sem foto mostram um quadro reservado com a descrição do que falta. O crédito aparece no rodapé automaticamente.
 
 ## Ver localmente

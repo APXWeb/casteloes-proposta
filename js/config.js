@@ -19,7 +19,7 @@ window.CASA = {
 
   /*
    * PREÇOS — preencha com o valor em reais (ex.: 98 ou 104.5).
-   * Enquanto estiver null, o cardápio mostra "consulte".
+   * Enquanto estiver null, o item aparece sem preço (o aviso do cardápio pede para confirmar com a casa).
    */
   precos: {
     'pizza-casteloes': null,

@@ -291,7 +291,7 @@ ol, ul { padding: 0; list-style: none; }
   position: absolute;
   left: 50%;
   bottom: 0;
-  width: min(74vw, 900px);
+  width: min(74vw, 900px, (100svh - var(--barra-altura)) * 1.02);
   aspect-ratio: 1000 / 900;
   transform: translateX(-50%) scale(calc(0.94 + var(--calor) * 0.06));
   transform-origin: 50% 100%;
@@ -332,9 +332,10 @@ ol, ul { padding: 0; list-style: none; }
   color: #2b1c13;
 }
 /* A mesma palavra, acesa pela brasa, por cima */
-.abertura__aceso,
+.abertura__nome::after,
 .abertura__ano span::after {
   content: attr(data-texto);
+  content: attr(data-texto) / '';
   position: absolute;
   inset: 0;
   color: transparent;
@@ -398,7 +399,7 @@ ol, ul { padding: 0; list-style: none; }
   position: relative;
   padding: clamp(96px, 16vh, 180px) var(--lateral) clamp(96px, 14vh, 160px);
   background:
-    radial-gradient(ellipse 70% 40% at 50% 12%, rgba(240, 110, 30, 0.06), transparent 70%),
+    radial-gradient(ellipse 70% 40% at 50% 38%, rgba(240, 110, 30, 0.06), transparent 70%),
     var(--fuligem);
 }
 .origem__grade {
@@ -631,14 +632,83 @@ html:not(.js) .linha__item::before {
   align-self: center;
   justify-self: center;
   position: relative;
-  width: min(82svh - var(--barra-altura) * 0.5, 100%);
-  aspect-ratio: 1;
+  margin: 0;
+  /* quadro em arco, a boca do forno de novo */
+  width: min((80svh - var(--barra-altura)) * 0.8, 100%);
 }
-.pizza__canvas {
+.pizza__quadro {
   position: relative;
   width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 999px 999px 0 0;
+  background: #0a0604;
+  box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 180, 105, 0.18);
+  isolation: isolate;
+}
+.pizza__quadro::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 70% at 50% 45%, transparent 55%, rgba(10, 6, 4, 0.55)),
+    radial-gradient(ellipse 70% 40% at 50% 100%, rgba(240, 110, 30, calc(var(--assar) * 0.35)), transparent 70%);
+}
+.pizza__camada {
+  position: absolute;
+  left: 0; top: 0;
+  width: 100%;
   height: 100%;
-  z-index: 1;
+  object-fit: cover;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.pizza__camada[data-camada='massa'] { opacity: 1; }
+/* a foto da montagem é quadrada: ocupa a altura do quadro e a câmera a percorre */
+.pizza__camada--quadrada {
+  width: auto;
+  max-width: none;
+  aspect-ratio: 1;
+  object-fit: fill;
+  transform-origin: 0 0;
+}
+.pizza__nota {
+  position: absolute;
+  z-index: 4;
+  left: 0; top: 0;
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px 7px 10px;
+  border-radius: 999px;
+  background: rgba(15, 10, 7, 0.82);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.2;
+  color: var(--creme);
+  white-space: nowrap;
+  transform: translate(-14px, -50%);
+  pointer-events: none;
+}
+.pizza__nota::before {
+  content: '';
+  width: 10px; height: 10px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--brasa-clara);
+  box-shadow: 0 0 0 4px rgba(255, 180, 105, 0.3);
+}
+.pizza__nota[data-nota='queijo'] { flex-direction: row-reverse; transform: translate(calc(-100% + 14px), -50%); padding: 7px 10px 7px 14px; }
+.pizza__credito {
+  margin-top: 10px;
+  font-size: 0.8rem;
+  font-stretch: 88%;
+  color: var(--fumaca);
+  text-align: center;
 }
 
 .passos {
@@ -714,6 +784,7 @@ html:not(.js) .linha__item::before {
 }
 .pizza--simples .pizza__visual,
 .pizza--simples .pizza__barra { display: none; }
+.pizza--simples .passo__img { border-radius: 999px 999px 2px 2px; object-fit: cover; }
 .pizza--simples .passos {
   display: flex;
   gap: 16px;
@@ -939,11 +1010,6 @@ html:not(.js) .linha__item::before {
   font-size: 1.08rem;
   font-variant-numeric: tabular-nums lining-nums;
   white-space: nowrap;
-}
-.preco--consulte {
-  font-weight: 500;
-  font-style: normal;
-  color: var(--tinta-suave);
 }
 .cardapio__delivery {
   margin-top: 36px;
@@ -1250,12 +1316,19 @@ html:not(.js) .linha__item::before {
   left: 0; right: 0;
   height: 12px;
   background: var(--papel);
-  -webkit-mask: radial-gradient(circle at 8px 0, transparent 6px, #000 6.5px) 0 0 / 16px 12px repeat-x;
-  mask: radial-gradient(circle at 8px 0, transparent 6px, #000 6.5px) 0 0 / 16px 12px repeat-x;
   pointer-events: none;
 }
-.cardapio::before { top: -11px; transform: scaleY(-1); }
-.cardapio::after { bottom: -11px; background: #dac7a3; }
+.cardapio::before {
+  top: -11px;
+  -webkit-mask: radial-gradient(circle at 8px 0, transparent 6px, #000 6.5px) 0 0 / 16px 12px repeat-x;
+  mask: radial-gradient(circle at 8px 0, transparent 6px, #000 6.5px) 0 0 / 16px 12px repeat-x;
+}
+.cardapio::after {
+  bottom: -11px;
+  background: #d5c19e;
+  -webkit-mask: radial-gradient(circle at 8px 100%, transparent 6px, #000 6.5px) 0 0 / 16px 12px repeat-x;
+  mask: radial-gradient(circle at 8px 100%, transparent 6px, #000 6.5px) 0 0 / 16px 12px repeat-x;
+}
 /* salão começa na sombra do papel e termina na mesma cor da visita */
 .salao {
   background:
@@ -1282,6 +1355,9 @@ html:not(.js) .linha__item::before {
 .linha__item p,
 .passo p,
 .salao__texto,
+.carro-chefe__desc,
+.horario__nota,
+.galeria__texto,
 .expressao__texto { text-wrap: pretty; }
 .abertura__sub { max-width: 44ch; }
 
@@ -1295,10 +1371,21 @@ html:not(.js) .linha__item::before {
 /* ---------- Salão: a quarta foto fecha a galeria em Z ---------- */
 
 .galeria__d {
-  grid-column: 2 / span 6;
+  grid-column: 1 / span 7;
   grid-row: 3;
   aspect-ratio: 3 / 2;
   margin-top: 0;
+}
+.galeria__texto {
+  grid-column: 9 / span 4;
+  grid-row: 3;
+  align-self: center;
+  max-width: 30ch;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(1.3rem, 1.8vw, 1.7rem);
+  line-height: 1.35;
+  color: var(--creme);
 }
 
 /* ---------- Visita: texto e botão num canto, a placa à vista ---------- */
@@ -1385,7 +1472,6 @@ html:not(.js) .linha__item::before {
     inset: var(--barra-altura) 0 0 0;
     z-index: -1;
     background: rgba(10, 6, 4, 0.55);
-    pointer-events: none;
   }
 
   .origem__grade { display: block; }
@@ -1403,7 +1489,8 @@ html:not(.js) .linha__item::before {
   .visita__info,
   .mapa { grid-column: 1 / -1; }
   .mapa { position: relative; top: 0; margin-top: 48px; aspect-ratio: 4 / 3; }
-  .galeria__d { grid-column: 1 / span 8; }
+  .galeria__d { grid-column: 1 / span 7; }
+  .galeria__texto { grid-column: 8 / span 5; }
 
   .rodape__colunas { grid-template-columns: 1fr 1fr; }
   .rodape__creditos { grid-column: 1 / -1; }
@@ -1518,6 +1605,7 @@ html:not(.js) .linha__item::before {
   .item__nome { font-size: 1.3rem; }
 
   .galeria { display: flex; flex-direction: column; gap: 14px; }
+  .galeria__texto { order: -1; margin-bottom: 14px; max-width: none; }
   .galeria__a { aspect-ratio: 4 / 5; }
   .galeria__b,
   .galeria__d { margin: 0; aspect-ratio: 4 / 3; }
@@ -1528,6 +1616,8 @@ html:not(.js) .linha__item::before {
   .visita__acoes .botao { flex: 1 1 100%; }
   .rodape__colunas { grid-template-columns: 1fr; }
   .mapa__capa { padding: 20px; }
+  .mapa { aspect-ratio: 4 / 5; }
+  .mapa__foto img { object-position: 72% 18% !important; }
 }
 
 @media (max-width: 640px) and (max-height: 780px) {

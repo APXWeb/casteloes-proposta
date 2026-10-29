@@ -12,7 +12,21 @@
   // As cenas são montadas de um jeito no desktop e de outro no celular:
   // ao cruzar o limite (girar o tablet, mudar a janela), recarrega no modo certo.
   function aoTrocarModo() {
-    if ((movimentoReduzido.matches || telaCompacta.matches) !== modoSimples) window.location.reload();
+    if ((movimentoReduzido.matches || telaCompacta.matches) === modoSimples) return;
+    try {
+      var atual = null;
+      Array.prototype.forEach.call(document.querySelectorAll('main > section'), function (sec) {
+        if (sec.getBoundingClientRect().top <= window.innerHeight * 0.4) atual = sec.id;
+      });
+      if (atual) sessionStorage.setItem('casteloes-secao', atual);
+    } catch (e) {}
+    window.location.reload();
+  }
+  function voltarParaSecao() {
+    var id = null;
+    try { id = sessionStorage.getItem('casteloes-secao'); sessionStorage.removeItem('casteloes-secao'); } catch (e) {}
+    var alvo = id && document.getElementById(id);
+    if (alvo) alvo.scrollIntoView({ behavior: 'auto' });
   }
   [movimentoReduzido, telaCompacta].forEach(function (mq) {
     if (mq.addEventListener) mq.addEventListener('change', aoTrocarModo);
@@ -29,7 +43,14 @@
 
   function hora(texto) {
     var p = texto.split(':');
-    return p[1] === '00' ? p[0] + 'h' : p[0] + 'h' + p[1];
+    var h = parseInt(p[0], 10);
+    if (h === 0 && p[1] === '00') return 'meia-noite';
+    return p[1] === '00' ? h + 'h' : h + 'h' + p[1];
+  }
+  // "às 23h" ou "à meia-noite"
+  function asHora(texto) {
+    var x = hora(texto);
+    return x === 'meia-noite' ? 'à meia-noite' : 'às ' + x;
   }
   function minutos(texto) {
     var p = texto.split(':');
@@ -64,7 +85,7 @@
       : funcionaHoje && agora.min >= abre && agora.min < fecha;
 
     if (aberto) {
-      return { aberto: true, curto: 'Aberto até ' + hora(h.fecha), longo: 'Aberto agora, até as ' + hora(h.fecha) + '.' };
+      return { aberto: true, curto: 'Aberto até ' + (hora(h.fecha) === 'meia-noite' ? 'meia-noite' : hora(h.fecha)), longo: 'Aberto agora, até ' + (hora(h.fecha) === 'meia-noite' ? 'a meia-noite' : 'as ' + hora(h.fecha)) + '.' };
     }
     if (funcionaHoje && agora.min < abre) {
       return { aberto: false, curto: 'Abre hoje às ' + hora(h.abre), longo: 'Fechado agora. Abre hoje às ' + hora(h.abre) + '.' };
@@ -90,7 +111,11 @@
       var texto = $('[data-status-texto]', el);
       if (texto) texto.textContent = el.classList.contains('status--grande') ? s.longo : s.curto;
     });
-    var hoje = agoraEmSaoPaulo().dia;
+    var agora = agoraEmSaoPaulo(), hc = CASA.horario;
+    var hoje = agora.dia;
+    if (minutos(hc.fecha) <= minutos(hc.abre) && agora.min < minutos(hc.fecha) && hc.dias.indexOf((agora.dia + 6) % 7) !== -1) {
+      hoje = (agora.dia + 6) % 7;
+    }
     $$('[data-horario-tabela] tr').forEach(function (tr) {
       tr.classList.toggle('hoje', Number(tr.getAttribute('data-dia')) === hoje);
     });
@@ -105,11 +130,19 @@
       if (h.dias.indexOf(d) === -1) { atual = null; return; }
       if (atual) atual.fim = d; else faixas.push(atual = { ini: d, fim: d });
     });
+    if (!h.dias.length) return 'Fechado';
+    // a faixa que termina no domingo continua na que começa na segunda
+    if (faixas.length > 1 && faixas[0].ini === 1 && faixas[faixas.length - 1].fim === 0) {
+      faixas[faixas.length - 1].fim = faixas[0].fim;
+      faixas.shift();
+    }
+    var seguinte = function (d) { return (d + 1) % 7; };
     var dias = h.dias.length === 7 ? 'Todos os dias' : faixas.map(function (f, i) {
       var nome = i === 0 ? DIAS[f.ini] : DIAS_MINUSC[f.ini];
-      return f.ini === f.fim ? nome : nome + ' a ' + DIAS_MINUSC[f.fim];
+      if (f.ini === f.fim) return nome;
+      return nome + (seguinte(f.ini) === f.fim ? ' e ' : ' a ') + DIAS_MINUSC[f.fim];
     }).join(', ');
-    return dias + ', das ' + hora(h.abre) + ' às ' + hora(h.fecha);
+    return dias + ', das ' + hora(h.abre) + ' ' + asHora(h.fecha);
   }
 
   function montarHorario() {
@@ -127,7 +160,7 @@
         th.scope = 'row';
         th.textContent = DIAS[d];
         var td = document.createElement('td');
-        td.textContent = abre ? hora(h.abre) + ' às ' + hora(h.fecha) : 'Fechado';
+        td.textContent = abre ? hora(h.abre) + ' ' + asHora(h.fecha) : 'Fechado';
         tr.appendChild(th);
         tr.appendChild(td);
         corpo.appendChild(tr);
@@ -250,11 +283,13 @@
     document.addEventListener('click', function (e) {
       if (aberto() && !e.target.closest('.barra')) fechar();
     });
+    // a área escurecida pertence ao próprio menu: tocar nela só fecha
+    nav.addEventListener('click', function (e) { if (e.target === nav) fechar(); });
     window.addEventListener('scroll', function () {
       if (aberto() && Math.abs(window.scrollY - yAoAbrir) > 60) fechar();
     }, { passive: true });
-    nav.addEventListener('focusout', function (e) {
-      if (aberto() && telaCompacta.matches && e.relatedTarget && !e.relatedTarget.closest('.barra')) fechar();
+    $('.barra').addEventListener('focusout', function (e) {
+      if (aberto() && e.relatedTarget && !e.relatedTarget.closest('.barra')) fechar();
     });
 
     // Marca no menu a seção em que a pessoa está
@@ -415,6 +450,7 @@
       $('.linha').style.setProperty('--progresso', 1);
       $$('.linha__item').forEach(function (li) { li.classList.add('aceso'); });
       montarPizzaSimples(pizzaSecao);
+      window.addEventListener('load', voltarParaSecao);
       return;
     }
 
@@ -470,9 +506,9 @@
 
     // 6. Salão: leve paralaxe nas fotos menores
     if (!modoSimples) {
-      [['.galeria__b', -10], ['.galeria__c', 8]].forEach(function (par) {
-        gsap.fromTo(par[0], { yPercent: -par[1] / 2 }, {
-          yPercent: par[1] / 2,
+      [['.galeria__b', -8], ['.galeria__c', 6]].forEach(function (par) {
+        gsap.fromTo(par[0], { yPercent: 0 }, {
+          yPercent: par[1],
           ease: 'none',
           scrollTrigger: { trigger: '.galeria', start: 'top bottom', end: 'bottom top', scrub: true },
         });
@@ -481,70 +517,93 @@
 
     // As fontes mudam a altura dos textos: recalcula as cenas fixadas quando chegarem
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { ST.refresh(); });
-    window.addEventListener('load', function () { ST.refresh(); });
+    window.addEventListener('load', function () { ST.refresh(); voltarParaSecao(); });
   }
 
+  // Desktop: câmera sobre fotos reais da montagem, guiada pelo scroll e reversível
   function montarPizzaScroll(secao, gsap) {
-    var canvas = $('.pizza__canvas', secao);
-    var pizza = window.PizzaCasteloes.criar(canvas);
+    var quadro = $('.pizza__quadro', secao);
+    var camada = {};
+    $$('[data-camada]', quadro).forEach(function (el) { camada[el.getAttribute('data-camada')] = el; });
+    var nota = { queijo: $('[data-nota="queijo"]', quadro), molho: $('[data-nota="molho"]', quadro) };
     var passos = $$('.passo', secao);
-    var estado = { p: 0 };
-    var quadro = 0, visivel = false;
-    var forno = window.PizzaCasteloes.ETAPAS.forno;
+    var barra = $('.pizza__barra span', secao);
 
-    pizza.preparar();
-    pizza.desenhar(0, 0);
+    // Enquadramentos na foto da montagem (frações da foto) e o que cada nota aponta
+    var PLANO = {
+      queijo: { fx: 0.83, fy: 0.38, s: 1.8 },
+      molho: { fx: 0.3, fy: 0.68, s: 1.55 },
+      todo: { fx: 0.5, fy: 0.5, s: 1 },
+    };
+    var ALVO = { queijo: { x: 0.93, y: 0.33 }, molho: { x: 0.17, y: 0.75 } };
+    var LIMITES = [0.17, 0.38, 0.58, 0.8];
 
-    function intensidadeForno(p) {
-      var t = Math.max(0, Math.min(1, (p - forno[0]) / (forno[1] - forno[0])));
-      return Math.sin(Math.PI * Math.min(1, t * 1.15));
+    function camera(p) {
+      var W = quadro.clientWidth, H = quadro.clientHeight, s = p.s;
+      var x = W / 2 - s * p.fx * H, y = H / 2 - s * p.fy * H;
+      x = Math.min(0, Math.max(W - s * H, x));
+      y = Math.min(0, Math.max(H - s * H, y));
+      return { x: x, y: y, scale: s };
+    }
+    function pontoNota(nome) {
+      var k = camera(PLANO[nome]), H = quadro.clientHeight;
+      return { left: k.x + k.scale * ALVO[nome].x * H, top: k.y + k.scale * ALVO[nome].y * H };
+    }
+    function plano(nome, extra) {
+      var o = {
+        x: function () { return camera(PLANO[nome]).x; },
+        y: function () { return camera(PLANO[nome]).y; },
+        scale: PLANO[nome].s,
+      };
+      for (var k in extra) o[k] = extra[k];
+      return o;
+    }
+    function lugarNota(nome) {
+      return {
+        left: function () { return pontoNota(nome).left; },
+        top: function () { return pontoNota(nome).top; },
+      };
     }
 
-    function render() {
-      var p = estado.p;
-      pizza.desenhar(p, performance.now() / 1000);
-      var ativo = window.PizzaCasteloes.etapaAtiva(p);
+    function atualizar(p) {
+      var ativo = 0;
+      while (ativo < LIMITES.length && p >= LIMITES[ativo]) ativo++;
       passos.forEach(function (el, i) { el.classList.toggle('ativo', i === ativo); });
-      secao.style.setProperty('--assar', intensidadeForno(p).toFixed(3));
-      secao.style.setProperty('--progresso', p.toFixed(4));
-      $('.pizza__barra span', secao).style.setProperty('--progresso', p.toFixed(4));
-
-      // A brasa só tremula enquanto a pizza está no forno e a cena está na tela
-      if (p > forno[0] && visivel && !quadro) quadro = requestAnimationFrame(tremer);
+      var forno = Math.max(0, Math.min(1, (p - 0.8) / 0.12));
+      secao.style.setProperty('--assar', (forno * forno * (3 - 2 * forno)).toFixed(3));
+      barra.style.setProperty('--progresso', p.toFixed(4));
     }
-    function tremer() {
-      quadro = 0;
-      if (!visivel || estado.p <= forno[0]) return;
-      pizza.desenhar(estado.p, performance.now() / 1000);
-      quadro = requestAnimationFrame(tremer);
-    }
-    new IntersectionObserver(function (en) {
-      visivel = en[0].isIntersecting;
-      if (!visivel && quadro) { cancelAnimationFrame(quadro); quadro = 0; }
-      if (visivel) render();
-    }).observe(canvas);
 
-    gsap.to(estado, {
-      p: 1,
-      ease: 'none',
-      onUpdate: render,
+    var tl = gsap.timeline({
+      defaults: { ease: 'none' },
       scrollTrigger: {
         trigger: secao,
         start: 'top top',
         end: '+=420%',
         pin: '.pizza__palco',
         scrub: 0.6,
+        invalidateOnRefresh: true,
+        onUpdate: function (st) { atualizar(st.progress); },
       },
     });
-    render();
-
-    var largura = window.innerWidth;
-    window.addEventListener('resize', function () {
-      if (Math.abs(window.innerWidth - largura) < 40) return;
-      largura = window.innerWidth;
-      pizza.preparar();
-      pizza.desenhar(estado.p, 0);
-    });
+    tl.fromTo(camada.massa, { opacity: 1, scale: 1.12 }, { scale: 1, duration: 0.19 }, 0)
+      // 2. a câmera chega perto das fatias de muçarela, sob o molho
+      .fromTo(camada.montagem, plano('queijo', { opacity: 0 }), { opacity: 1, duration: 0.05 }, 0.16)
+      .to(camada.massa, { opacity: 0, duration: 0.05 }, 0.17)
+      .fromTo(nota.queijo, Object.assign({ opacity: 0 }, lugarNota('queijo')), { opacity: 1, duration: 0.03 }, 0.23)
+      .to(nota.queijo, { opacity: 0, duration: 0.03 }, 0.35)
+      // 3. recua até o molho por cima do queijo
+      .to(camada.montagem, plano('molho', { duration: 0.08, ease: 'power1.inOut' }), 0.38)
+      .fromTo(nota.molho, Object.assign({ opacity: 0 }, lugarNota('molho')), { opacity: 1, duration: 0.03 }, 0.47)
+      .to(nota.molho, { opacity: 0, duration: 0.03 }, 0.55)
+      // 4. abre o plano: a mão espalhando a calabresa
+      .to(camada.montagem, plano('todo', { duration: 0.1, ease: 'power1.inOut' }), 0.58)
+      // 5. o forno aceso e a pizza saindo
+      .fromTo(camada.fogo, { opacity: 0, scale: 1.12 }, { opacity: 1, duration: 0.05 }, 0.8)
+      .to(camada.fogo, { scale: 1, duration: 0.14 }, 0.8)
+      .fromTo(camada.saindo, { opacity: 0, scale: 1.08 }, { opacity: 1, duration: 0.04 }, 0.92)
+      .to(camada.saindo, { scale: 1, duration: 0.08 }, 0.92);
+    atualizar(0);
   }
 
   // Celular e movimento reduzido: cada etapa em um quadro, num carrossel
@@ -560,11 +619,18 @@
     lista.setAttribute('tabindex', '0');
     lista.setAttribute('aria-label', 'As cinco etapas da Pizza Castelões');
 
+    var descricoes = [
+      'Bolas de massa descansando na bancada enfarinhada.',
+      'Fatias de muçarela sobre a massa, com o molho por cima.',
+      'O molho de tomate espalhado sobre o queijo.',
+      'A mão do pizzaiolo espalhando rodelas de calabresa.',
+      'A pizza assada saindo do forno a lenha.',
+    ];
     passos.forEach(function (passo, i) {
       var img = new Image();
       img.className = 'passo__img';
       img.src = 'img/pizza-etapa-' + (i + 1) + '.webp';
-      img.alt = '';
+      img.alt = descricoes[i];
       img.width = 720;
       img.height = 720;
       img.loading = 'lazy';
