@@ -13,9 +13,9 @@
 window.FOTOS = {
   'origem': {
     src: 'img/origem-acervo.webp', largura: 645, altura: 425,
-    alt: 'Fotografia antiga em sépia: um garçom de paletó branco serve uma mesa comprida cheia de homens de terno.',
+    alt: 'Fotografia antiga em sépia: um garçom de paletó branco serve uma mesa comprida de homens de camisa e gravata.',
     credito: '@cantina_casteloes no Instagram',
-    legenda: 'Do acervo da família, publicado pela casa.',
+    legenda: 'Foto antiga publicada pela casa no Instagram.',
   },
   'forno': {
     src: 'img/forno-lenha.webp', largura: 720, altura: 900,
@@ -25,7 +25,7 @@ window.FOTOS = {
   },
   'fabio': {
     src: 'img/fabio-donato.webp', largura: 770, altura: 513,
-    alt: 'Fábio Donato, de dólmã branca, sorri no salão mostrando uma pizza de calabresa.',
+    alt: 'Fábio Donato, de dólmã branco, sorri no salão mostrando uma pizza de calabresa.',
     credito: 'Ralph Schmidt, via Google Maps',
     foco: '56% 35%',
   },

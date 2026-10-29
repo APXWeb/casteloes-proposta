@@ -133,13 +133,13 @@
     // Muçarela em fatias: cada fatia vira um pequeno sprite.
     var r2 = aleatorio(7);
     this.fatias = [];
-    var passo = R * 0.27;
+    var passo = R * 0.2;
     var linha = 0;
     for (var gy = -R; gy <= R; gy += passo * 0.78, linha++) {
       for (var gx = -R; gx <= R; gx += passo * 0.9) {
         var x = gx + (r2() - 0.5) * passo * 0.45 + (linha % 2 ? passo * 0.45 : 0);
         var y = gy + (r2() - 0.5) * passo * 0.35;
-        if (Math.hypot(x, y) > R * 0.66) continue;
+        if (Math.hypot(x, y) > R * 0.68) continue;
         this.fatias.push(this.desenharFatiaQueijo(r2, x, y));
       }
     }
@@ -159,10 +159,10 @@
     // Calabresa artesanal em rodelas finas, cobrindo a pizza inteira (como nas fotos da casa).
     var r3 = aleatorio(19);
     this.rodelas = [];
-    var minimo = R * 0.105, tentativas = 0;
-    while (this.rodelas.length < 46 && tentativas < 4000) {
+    var minimo = R * 0.058, tentativas = 0;
+    while (this.rodelas.length < 108 && tentativas < 6000) {
       tentativas++;
-      var pr = pontoNoDisco(r3, R * 0.68);
+      var pr = pontoNoDisco(r3, R * 0.72);
       var livre = this.rodelas.every(function (o) { return Math.hypot(o.x - pr.x, o.y - pr.y) > minimo; });
       if (livre) this.rodelas.push({ x: pr.x, y: pr.y, ordem: r3() });
     }
@@ -174,51 +174,41 @@
     });
   };
 
-  // Bancada de mármore enfarinhada onde a pizza é montada.
+  // Bancada de mármore escuro, enfarinhada, onde a pizza é montada.
   Pizza.prototype.desenharTabua = function (rand) {
     var S = this.S, c = this.c;
     var t = novaTela(S), ctx = t.getContext('2d');
-    var g = ctx.createRadialGradient(c * 0.8, c * 0.7, 0, c, c, S * 0.62);
-    g.addColorStop(0, '#d8d2c6');
-    g.addColorStop(1, '#a9a297');
+    var g = ctx.createRadialGradient(c * 0.85, c * 0.75, 0, c, c, S * 0.6);
+    g.addColorStop(0, '#3d322a');
+    g.addColorStop(1, '#1c1510');
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, S, S);
-    // Veios
-    for (var i = 0; i < 9; i++) {
+    // Veios claros e finos
+    for (var i = 0; i < 11; i++) {
       var x0 = rand() * S, y0 = rand() * S, ang = rand() * TAU;
       ctx.beginPath();
       ctx.moveTo(x0, y0);
       var x = x0, y = y0;
-      for (var k = 0; k < 40; k++) {
-        ang += (rand() - 0.5) * 0.5;
-        x += Math.cos(ang) * S * 0.03;
-        y += Math.sin(ang) * S * 0.03;
+      for (var k = 0; k < 46; k++) {
+        ang += (rand() - 0.5) * 0.45;
+        x += Math.cos(ang) * S * 0.028;
+        y += Math.sin(ang) * S * 0.028;
         ctx.lineTo(x, y);
       }
-      ctx.strokeStyle = 'rgba(110,104,96,' + (0.12 + rand() * 0.2) + ')';
-      ctx.lineWidth = 0.6 + rand() * 2.4;
-      ctx.filter = 'blur(' + (rand() * 1.5).toFixed(1) + 'px)';
+      ctx.strokeStyle = 'rgba(205,190,170,' + (0.05 + rand() * 0.1) + ')';
+      ctx.lineWidth = 0.6 + rand() * 1.8;
       ctx.stroke();
     }
-    ctx.filter = 'none';
-    // Farinha espalhada, mais densa onde a massa foi aberta
-    for (var f = 0; f < 70; f++) {
-      var pf = pontoNoDisco(rand, S * 0.42);
-      mancha(ctx, c + pf.x, c + pf.y, S * (0.03 + rand() * 0.07), '250,248,242', 0.12 + rand() * 0.2);
+    // Farinha espalhada em volta da massa
+    for (var f = 0; f < 60; f++) {
+      var pf = pontoNoDisco(rand, S * 0.44);
+      mancha(ctx, c + pf.x, c + pf.y, S * (0.03 + rand() * 0.07), '240,232,218', 0.05 + rand() * 0.1);
     }
-    for (var d = 0; d < 2600; d++) {
-      var pd = pontoNoDisco(rand, S * 0.48);
-      ctx.fillStyle = 'rgba(255,255,252,' + (0.15 + rand() * 0.4) + ')';
-      ctx.fillRect(c + pd.x, c + pd.y, 0.8 + rand() * 1.6, 0.8 + rand() * 1.6);
+    for (var d = 0; d < 2200; d++) {
+      var pd = pontoNoDisco(rand, S * 0.47);
+      ctx.fillStyle = 'rgba(245,238,226,' + (0.1 + rand() * 0.35) + ')';
+      ctx.fillRect(c + pd.x, c + pd.y, 0.8 + rand() * 1.5, 0.8 + rand() * 1.5);
     }
-    // A luz quente do salão cai sobre a bancada e escurece nas bordas
-    ctx.globalCompositeOperation = 'multiply';
-    var luz = ctx.createRadialGradient(c, c, S * 0.2, c, c, S * 0.55);
-    luz.addColorStop(0, 'rgb(255,236,210)');
-    luz.addColorStop(1, 'rgb(120,96,76)');
-    ctx.fillStyle = luz;
-    ctx.fillRect(0, 0, S, S);
-    ctx.globalCompositeOperation = 'source-over';
     return t;
   };
 
@@ -312,9 +302,7 @@
       g.addColorStop(1, '#bea07a');
     }
     ctx.fillStyle = g;
-    ctx.filter = 'blur(' + Math.max(1, R * 0.014) + 'px)';
     ctx.fill();
-    ctx.filter = 'none';
 
     // Volumes irregulares ao longo da borda
     for (var b = 0; b < 70; b++) {
@@ -353,11 +341,12 @@
     // Sombra onde a borda sobe
     ctx.beginPath();
     tracarContorno(ctx, c, c, RI * 0.985, interna, 140);
-    ctx.strokeStyle = assada ? 'rgba(100,45,12,0.4)' : 'rgba(130,100,60,0.22)';
-    ctx.lineWidth = R * 0.03;
-    ctx.filter = 'blur(' + Math.max(1, R * 0.015) + 'px)';
+    ctx.strokeStyle = assada ? 'rgba(100,45,12,0.3)' : 'rgba(130,100,60,0.16)';
+    ctx.shadowColor = ctx.strokeStyle;
+    ctx.shadowBlur = R * 0.03;
+    ctx.lineWidth = R * 0.025;
     ctx.stroke();
-    ctx.filter = 'none';
+    ctx.shadowBlur = 0;
     ctx.restore();
 
     iluminar(ctx, S, 1.2);
@@ -366,40 +355,30 @@
 
   Pizza.prototype.desenharFatiaQueijo = function (rand, x, y) {
     var R = this.R;
-    var w = R * (0.25 + rand() * 0.07), h = R * (0.18 + rand() * 0.05);
-    var tam = Math.ceil(Math.hypot(w, h) * 1.3);
+    var raio = R * (0.1 + rand() * 0.045);
+    var tam = Math.ceil(raio * 3);
     var t = novaTela(tam), ctx = t.getContext('2d');
     var m = tam / 2;
-    var borda = ruido(rand, 0.07, [2, 3, 5, 7]);
+    var borda = ruido(rand, 0.26, [2, 3, 4, 6, 9]);
 
     ctx.translate(m, m);
+    ctx.scale(1, 0.72 + rand() * 0.2);
     ctx.rotate(rand() * TAU);
-    ctx.shadowColor = 'rgba(70,50,20,0.25)';
-    ctx.shadowBlur = R * 0.012;
-    ctx.shadowOffsetY = R * 0.006;
-    ctx.beginPath();
-    for (var i = 0; i <= 44; i++) {
-      var a = (i / 44) * TAU;
-      var ca = Math.cos(a), sa = Math.sin(a);
-      var px = Math.sign(ca) * Math.pow(Math.abs(ca), 0.6) * w * 0.5;
-      var py = Math.sign(sa) * Math.pow(Math.abs(sa), 0.6) * h * 0.5;
-      var k = 1 + borda(a);
-      if (i === 0) ctx.moveTo(px * k, py * k); else ctx.lineTo(px * k, py * k);
-    }
-    ctx.closePath();
-    var g = ctx.createLinearGradient(-w / 2, -h / 2, w / 2, h / 2);
-    g.addColorStop(0, 'rgba(252,247,232,0.97)');
-    g.addColorStop(1, 'rgba(236,226,198,0.95)');
+    ctx.shadowColor = 'rgba(70,50,20,0.22)';
+    ctx.shadowBlur = R * 0.014;
+    ctx.shadowOffsetY = R * 0.005;
+    caminhoIrregular(ctx, 0, 0, raio, borda, 48);
+    var g = ctx.createRadialGradient(-raio * 0.3, -raio * 0.3, 0, 0, 0, raio * 1.2);
+    g.addColorStop(0, 'rgba(252,248,236,0.98)');
+    g.addColorStop(0.75, 'rgba(240,231,206,0.95)');
+    g.addColorStop(1, 'rgba(228,214,182,0.7)');
     ctx.fillStyle = g;
     ctx.fill();
     ctx.shadowColor = 'transparent';
-    ctx.strokeStyle = 'rgba(190,165,115,0.3)';
-    ctx.lineWidth = 1;
-    ctx.stroke();
-    for (var f = 0; f < 7; f++) {
-      ctx.fillStyle = 'rgba(205,185,140,0.3)';
+    for (var f = 0; f < 6; f++) {
+      ctx.fillStyle = 'rgba(210,192,150,0.28)';
       ctx.beginPath();
-      ctx.arc((rand() - 0.5) * w * 0.7, (rand() - 0.5) * h * 0.7, R * (0.003 + rand() * 0.006), 0, TAU);
+      ctx.arc((rand() - 0.5) * raio, (rand() - 0.5) * raio, R * (0.003 + rand() * 0.005), 0, TAU);
       ctx.fill();
     }
     return { tela: t, x: x, y: y, meio: m, ordem: rand() };
@@ -454,17 +433,21 @@
     ctx.shadowBlur = R * 0.02;
     ctx.strokeStyle = assado ? '#8f2317' : '#ae2a1c';
     ctx.fillStyle = ctx.strokeStyle;
-    // Cada colherada deixa uma poça irregular; entre elas o queijo aparece
-    var th = 0.2;
-    while (th < max) {
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    var anterior = null;
+    for (var i = 0; i <= 640; i++) {
+      var th = (i / 640) * max;
       var pe = this.pontoEspiral(th);
-      var raio = R * (0.05 + 0.03 * (1 + largura(th * 0.6)) * 0.5 + rand() * 0.02);
-      var desvio = (rand() - 0.5) * R * 0.05;
-      var x = c + pe.x + Math.cos(th) * desvio, y = c + pe.y + Math.sin(th) * desvio;
-      var borda = ruido(rand, 0.18, [2, 3, 5]);
-      caminhoIrregular(ctx, x, y, raio, borda, 28);
-      ctx.fill();
-      th += (R * (0.07 + rand() * 0.04)) / Math.max(pe.r, R * 0.12);
+      var x = c + pe.x, y = c + pe.y;
+      if (anterior) {
+        ctx.lineWidth = R * 0.15 * (1 + largura(th * 0.6)) * (0.7 + 0.3 * Math.min(1, th / 4));
+        ctx.beginPath();
+        ctx.moveTo(anterior[0], anterior[1]);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+      }
+      anterior = [x, y];
     }
     // Respingos da concha ao longo do caminho
     for (var k = 0; k < 26; k++) {
@@ -524,7 +507,7 @@
 
   Pizza.prototype.desenharRodela = function (rand, assada) {
     var R = this.R;
-    var r = R * (0.074 + rand() * 0.01);
+    var r = R * (0.068 + rand() * 0.024);
     var achata = 0.86 + rand() * 0.1; // corte levemente na diagonal
     var tam = Math.ceil(r * 2.6);
     var t = novaTela(tam), ctx = t.getContext('2d');
@@ -541,7 +524,7 @@
     ctx.shadowOffsetX = r * 0.05;
     ctx.shadowOffsetY = r * 0.12;
     caminhoIrregular(ctx, m, m, r, borda, 60);
-    ctx.fillStyle = assada ? '#6a2416' : '#93402f';
+    ctx.fillStyle = assada ? '#561a10' : '#7a2a1c';
     ctx.fill();
     ctx.restore();
 
@@ -550,13 +533,13 @@
     ctx.clip();
     var g = ctx.createRadialGradient(m - r * 0.2, m - r * 0.25, 0, m, m, r);
     if (assada) {
-      g.addColorStop(0, '#bd5a40');
-      g.addColorStop(0.75, '#a3482f');
-      g.addColorStop(1, '#7a3020');
+      g.addColorStop(0, '#ad4a33');
+      g.addColorStop(0.75, '#8e3624');
+      g.addColorStop(1, '#6a2216');
     } else {
-      g.addColorStop(0, '#d98a78');
-      g.addColorStop(0.75, '#c87160');
-      g.addColorStop(1, '#ad5646');
+      g.addColorStop(0, '#c9644f');
+      g.addColorStop(0.75, '#b04c3a');
+      g.addColorStop(1, '#8e3626');
     }
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, tam, tam);
@@ -742,7 +725,7 @@
 
     // Bordas do quadro sempre esmaecidas, para a cena se fundir com a página
     ctx.globalCompositeOperation = 'destination-in';
-    var borda = ctx.createRadialGradient(c, c, S * 0.43, c, c, S * 0.5);
+    var borda = ctx.createRadialGradient(c, c, S * 0.4, c, c, S * 0.5);
     borda.addColorStop(0, 'rgba(0,0,0,1)');
     borda.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = borda;

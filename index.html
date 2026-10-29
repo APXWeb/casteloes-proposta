@@ -23,7 +23,7 @@
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@85..100,400..700&family=Bodoni+Moda:ital,opsz,wght@0,6..96,500..800;1,6..96,500..800&display=swap">
   <link rel="stylesheet" href="css/estilo.css">
   <script>document.documentElement.classList.add('js');</script>
 </head>
@@ -61,6 +61,22 @@
     </button>
   </header>
 
+  <!-- Barra inferior no celular -->
+  <nav class="doca" aria-label="Ações rápidas">
+    <a class="doca__item doca__item--ligar" href="tel:+551132290542">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6.6 10.8a15.2 15.2 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.6a1 1 0 0 1-.25 1z"/></svg>
+      Ligar
+    </a>
+    <a class="doca__item" data-rota href="https://www.google.com/maps/dir/?api=1&amp;destination=Rua+Jairo+G%C3%B3is%2C+126%2C+Br%C3%A1s%2C+S%C3%A3o+Paulo" target="_blank" rel="noopener">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
+      Rota
+    </a>
+    <a class="doca__item" href="#cardapio">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 3h11a3 3 0 0 1 3 3v15H8a3 3 0 0 1-3-3zm3 4v2h8V7zm0 4v2h8v-2zm0 4v2h5v-2z"/></svg>
+      Cardápio
+    </a>
+  </nav>
+
   <main>
     <!-- 1. Abertura -->
     <section class="abertura" id="abertura" aria-labelledby="abertura-titulo">
@@ -69,7 +85,7 @@
         <div class="abertura__boca" aria-hidden="true"></div>
 
         <h1 class="abertura__titulo" id="abertura-titulo">
-          <span class="abertura__nome" data-texto="Castelões">Castelões</span>
+          <span class="abertura__nome">Castelões<span class="abertura__aceso" aria-hidden="true">Castelões</span></span>
           <span class="sr">, cantina e pizzaria desde 1924</span>
         </h1>
 
@@ -101,7 +117,7 @@
           <li class="linha__item">
             <p class="linha__marco">1924</p>
             <h3 class="linha__titulo">Um napolitano e um calabrês no Brás</h3>
-            <p>Em 1º de outubro de 1924, Ettore Siniscalchi, de Nápoles, e Vicente Donato, da Calábria, fundam a casa no Brás, bairro operário e italiano de São Paulo.</p>
+            <p>Em 1º de outubro de 1924, o napolitano Ettore Siniscalchi e o calabrês Vicente Donato fundam a casa no Brás, em São Paulo.</p>
           </li>
           <li class="linha__item">
             <p class="linha__marco">Depois do jogo</p>
@@ -111,7 +127,7 @@
           <li class="linha__item">
             <p class="linha__marco">No mesmo forno</p>
             <h3 class="linha__titulo">Tradição napolitana</h3>
-            <p>Forno a lenha, massa grossa e bordas volumosas. A receita atravessou as gerações da família Donato.</p>
+            <p>Forno a lenha, massa grossa e bordas volumosas, na tradição napolitana.</p>
             <figure class="moldura moldura--arco origem__forno" data-foto="forno">
               <div class="foto-vazia"><span>O forno a lenha</span></div>
             </figure>
@@ -119,7 +135,7 @@
           <li class="linha__item linha__item--hoje">
             <p class="linha__marco">Hoje</p>
             <h3 class="linha__titulo">Fábio Donato, terceira geração</h3>
-            <p>Mestre pizzaiolo, Fábio Donato comanda a casa e o forno que a família mantém aceso há um século.</p>
+            <p>Mestre pizzaiolo, Fábio Donato comanda hoje a casa.</p>
             <figure class="moldura origem__fabio" data-foto="fabio">
               <div class="foto-vazia"><span>Retrato de Fábio Donato</span></div>
             </figure>
@@ -133,7 +149,7 @@
       <div class="pizza__palco">
         <div class="pizza__cabeca">
           <h2 class="pizza__titulo" id="pizza-titulo">Como nasce a Pizza Castelões</h2>
-          <p class="pizza__intro">O carro-chefe da casa, montado como sempre foi: o queijo vai antes do molho.</p>
+          <p class="pizza__intro">O carro-chefe da casa, montado na tradição da Castelões: o queijo vai antes do molho.</p>
         </div>
 
         <div class="pizza__visual">
@@ -143,7 +159,7 @@
         <ol class="passos">
           <li class="passo" data-passo="0">
             <h3>A massa</h3>
-            <div class="passo__texto"><p>Disco de massa grossa, aberto à mão, com a borda volumosa da tradição napolitana.</p></div>
+            <div class="passo__texto"><p>Disco de massa grossa, com a borda volumosa da tradição napolitana.</p></div>
           </li>
           <li class="passo passo--destaque" data-passo="1">
             <h3>Primeiro, a muçarela</h3>
@@ -159,7 +175,7 @@
           </li>
           <li class="passo" data-passo="4">
             <h3>O forno a lenha</h3>
-            <div class="passo__texto"><p>Lenha, brasa e o mesmo forno de sempre douram a borda e derretem o queijo.</p></div>
+            <div class="passo__texto"><p>Lenha e brasa: o forno a lenha doura a borda e derrete o queijo.</p></div>
           </li>
         </ol>
 
@@ -174,7 +190,7 @@
           <span class="expressao__linha">E tudo</span>
           <span class="expressao__linha">acabou em pizza.</span>
         </h2>
-        <p class="expressao__texto">A expressão “acabar em pizza” é associada à Castelões. Faz sentido: aqui, até as conversas de futebol terminavam à mesa.</p>
+        <p class="expressao__texto">A expressão “acabar em pizza” é associada à Castelões, a casa onde jogadores de futebol se reuniam depois das partidas.</p>
       </div>
     </section>
 
@@ -183,7 +199,7 @@
       <div class="cardapio__grade">
         <header class="cardapio__cabeca">
           <h2 class="cardapio__titulo" id="cardapio-titulo">Cardápio</h2>
-          <p class="cardapio__aviso">Preços e disponibilidade podem mudar. Confirme com a casa pelo <a href="tel:+551132290542">(11) 3229-0542</a>.</p>
+          <p class="cardapio__aviso">Preços e disponibilidade: confirme com a casa pelo <a href="tel:+551132290542">(11) 3229-0542</a>.</p>
         </header>
 
         <article class="carro-chefe">
@@ -233,7 +249,7 @@
             </li>
           </ul>
 
-          <p class="cardapio__delivery">Delivery somente pelos aplicativos de entrega. Para comer no salão, é só chegar.</p>
+          <p class="cardapio__delivery">Delivery somente pelos aplicativos de entrega.</p>
         </div>
       </div>
     </section>
@@ -248,9 +264,9 @@
 
         <div class="galeria">
           <figure class="moldura galeria__a" data-foto="salao-1"><div class="foto-vazia"><span>Salão, vista ampla</span></div></figure>
-          <figure class="moldura galeria__b" data-foto="salao-2"><div class="foto-vazia"><span>Detalhe das paredes</span></div></figure>
+          <figure class="moldura galeria__b" data-foto="salao-2"><div class="foto-vazia"><span>O balcão de mármore</span></div></figure>
           <figure class="moldura galeria__c" data-foto="salao-3"><div class="foto-vazia"><span>Mesas postas</span></div></figure>
-          <figure class="moldura galeria__d" data-foto="salao-4"><div class="foto-vazia"><span>Forno a lenha</span></div></figure>
+          <figure class="moldura galeria__d" data-foto="salao-4"><div class="foto-vazia"><span>O bar e suas paredes de garrafas</span></div></figure>
         </div>
       </div>
     </section>
@@ -320,21 +336,6 @@
     </div>
   </footer>
 
-  <!-- Barra inferior no celular -->
-  <nav class="doca" aria-label="Ações rápidas">
-    <a class="doca__item doca__item--ligar" href="tel:+551132290542">
-      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6.6 10.8a15.2 15.2 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.6a1 1 0 0 1-.25 1z"/></svg>
-      Ligar
-    </a>
-    <a class="doca__item" data-rota href="https://www.google.com/maps/dir/?api=1&amp;destination=Rua+Jairo+G%C3%B3is%2C+126%2C+Br%C3%A1s%2C+S%C3%A3o+Paulo" target="_blank" rel="noopener">
-      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
-      Rota
-    </a>
-    <a class="doca__item" href="#cardapio">
-      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 3h11a3 3 0 0 1 3 3v15H8a3 3 0 0 1-3-3zm3 4v2h8V7zm0 4v2h8v-2zm0 4v2h5v-2z"/></svg>
-      Cardápio
-    </a>
-  </nav>
 
   <dialog class="ampliar" aria-label="Foto ampliada">
     <button class="ampliar__fechar" type="button">Fechar</button>

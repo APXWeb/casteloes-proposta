@@ -9,6 +9,16 @@
   var telaCompacta = window.matchMedia('(max-width: 1023px)');
   var modoSimples = movimentoReduzido.matches || telaCompacta.matches;
 
+  // As cenas são montadas de um jeito no desktop e de outro no celular:
+  // ao cruzar o limite (girar o tablet, mudar a janela), recarrega no modo certo.
+  function aoTrocarModo() {
+    if ((movimentoReduzido.matches || telaCompacta.matches) !== modoSimples) window.location.reload();
+  }
+  [movimentoReduzido, telaCompacta].forEach(function (mq) {
+    if (mq.addEventListener) mq.addEventListener('change', aoTrocarModo);
+    else if (mq.addListener) mq.addListener(aoTrocarModo);
+  });
+
   function $(sel, ctx) { return (ctx || document).querySelector(sel); }
   function $$(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
 
@@ -46,9 +56,14 @@
     var h = CASA.horario;
     var agora = agoraEmSaoPaulo();
     var abre = minutos(h.abre), fecha = minutos(h.fecha);
+    var cruza = fecha <= abre; // ex.: abre 18:00 e fecha 00:30
     var funcionaHoje = h.dias.indexOf(agora.dia) !== -1;
+    var funcionaOntem = h.dias.indexOf((agora.dia + 6) % 7) !== -1;
+    var aberto = cruza
+      ? (funcionaHoje && agora.min >= abre) || (funcionaOntem && agora.min < fecha)
+      : funcionaHoje && agora.min >= abre && agora.min < fecha;
 
-    if (funcionaHoje && agora.min >= abre && agora.min < fecha) {
+    if (aberto) {
       return { aberto: true, curto: 'Aberto até ' + hora(h.fecha), longo: 'Aberto agora, até as ' + hora(h.fecha) + '.' };
     }
     if (funcionaHoje && agora.min < abre) {
@@ -60,7 +75,7 @@
         var quando = i === 1 ? 'amanhã' : DIAS_MINUSC[d];
         return {
           aberto: false,
-          curto: 'Fechado, abre ' + quando + ' às ' + hora(h.abre),
+          curto: 'Abre ' + quando + ' às ' + hora(h.abre),
           longo: 'Fechado agora. Abre ' + quando + ' às ' + hora(h.abre) + '.',
         };
       }
@@ -75,12 +90,31 @@
       var texto = $('[data-status-texto]', el);
       if (texto) texto.textContent = el.classList.contains('status--grande') ? s.longo : s.curto;
     });
+    var hoje = agoraEmSaoPaulo().dia;
+    $$('[data-horario-tabela] tr').forEach(function (tr) {
+      tr.classList.toggle('hoje', Number(tr.getAttribute('data-dia')) === hoje);
+    });
+  }
+
+  // Ex.: "Terça a domingo, das 18h às 23h", montado a partir de config.js.
+  // Dias que não são seguidos viram faixas: "Terça, quinta a domingo, …"
+  function resumoHorario(h) {
+    var semana = [1, 2, 3, 4, 5, 6, 0];
+    var faixas = [], atual = null;
+    semana.forEach(function (d) {
+      if (h.dias.indexOf(d) === -1) { atual = null; return; }
+      if (atual) atual.fim = d; else faixas.push(atual = { ini: d, fim: d });
+    });
+    var dias = h.dias.length === 7 ? 'Todos os dias' : faixas.map(function (f, i) {
+      var nome = i === 0 ? DIAS[f.ini] : DIAS_MINUSC[f.ini];
+      return f.ini === f.fim ? nome : nome + ' a ' + DIAS_MINUSC[f.fim];
+    }).join(', ');
+    return dias + ', das ' + hora(h.abre) + ' às ' + hora(h.fecha);
   }
 
   function montarHorario() {
     var h = CASA.horario;
     var corpo = $('[data-horario-tabela]');
-    var hoje = agoraEmSaoPaulo().dia;
     if (corpo) {
       var ordem = [1, 2, 3, 4, 5, 6, 0];
       corpo.innerHTML = '';
@@ -88,7 +122,7 @@
         var tr = document.createElement('tr');
         var abre = h.dias.indexOf(d) !== -1;
         if (!abre) tr.className = 'fechado';
-        if (d === hoje) tr.classList.add('hoje');
+        tr.setAttribute('data-dia', d);
         var th = document.createElement('th');
         th.scope = 'row';
         th.textContent = DIAS[d];
@@ -99,9 +133,10 @@
         corpo.appendChild(tr);
       });
     }
-    $$('[data-horario-resumo]').forEach(function (el) { el.textContent = h.resumo; });
+    $$('[data-horario-resumo]').forEach(function (el) { el.textContent = resumoHorario(h); });
     atualizarStatus();
     setInterval(atualizarStatus, 60000);
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) atualizarStatus(); });
   }
 
   /* ---------- Preços (lidos de js/config.js) ---------- */
@@ -112,10 +147,11 @@
       var valor = CASA.precos[el.getAttribute('data-preco')];
       if (typeof valor === 'number') {
         el.textContent = moeda.format(valor);
-        el.classList.remove('preco--consulte');
       } else {
-        el.textContent = 'consulte';
-        el.classList.add('preco--consulte');
+        // Sem preço definido: some o valor e a linha pontilhada; o aviso do cabeçalho cobre
+        el.textContent = '';
+        var item = el.closest('.item, .carro-chefe');
+        if (item) item.classList.add('sem-preco');
       }
     });
   }
@@ -193,20 +229,32 @@
   function montarMenu() {
     var botao = $('.barra__menu');
     var nav = $('#menu');
+    var yAoAbrir = 0;
+    function aberto() { return nav.classList.contains('aberto'); }
     function fechar() {
       nav.classList.remove('aberto');
       botao.setAttribute('aria-expanded', 'false');
       $('.sr', botao).textContent = 'Abrir menu';
     }
     botao.addEventListener('click', function () {
-      var abrir = botao.getAttribute('aria-expanded') !== 'true';
+      var abrir = !aberto();
       nav.classList.toggle('aberto', abrir);
       botao.setAttribute('aria-expanded', String(abrir));
       $('.sr', botao).textContent = abrir ? 'Fechar menu' : 'Abrir menu';
+      if (abrir) { yAoAbrir = window.scrollY; $('a', nav).focus(); }
     });
     $$('a', nav).forEach(function (a) { a.addEventListener('click', fechar); });
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && nav.classList.contains('aberto')) { fechar(); botao.focus(); }
+      if (e.key === 'Escape' && aberto()) { fechar(); botao.focus(); }
+    });
+    document.addEventListener('click', function (e) {
+      if (aberto() && !e.target.closest('.barra')) fechar();
+    });
+    window.addEventListener('scroll', function () {
+      if (aberto() && Math.abs(window.scrollY - yAoAbrir) > 60) fechar();
+    }, { passive: true });
+    nav.addEventListener('focusout', function (e) {
+      if (aberto() && telaCompacta.matches && e.relatedTarget && !e.relatedTarget.closest('.barra')) fechar();
     });
 
     // Marca no menu a seção em que a pessoa está
@@ -238,6 +286,8 @@
       iframe.setAttribute('allowfullscreen', '');
       $('.mapa__capa', mapa).remove();
       mapa.appendChild(iframe);
+      iframe.setAttribute('tabindex', '-1');
+      iframe.focus({ preventScroll: true });
     });
   }
 
@@ -439,7 +489,7 @@
     var pizza = window.PizzaCasteloes.criar(canvas);
     var passos = $$('.passo', secao);
     var estado = { p: 0 };
-    var tremendo = false, quadro;
+    var quadro = 0, visivel = false;
     var forno = window.PizzaCasteloes.ETAPAS.forno;
 
     pizza.preparar();
@@ -459,16 +509,20 @@
       secao.style.setProperty('--progresso', p.toFixed(4));
       $('.pizza__barra span', secao).style.setProperty('--progresso', p.toFixed(4));
 
-      // A brasa só tremula enquanto a pizza está no forno
-      var noForno = p > forno[0];
-      if (noForno && !tremendo) { tremendo = true; tremer(); }
-      if (!noForno) { tremendo = false; cancelAnimationFrame(quadro); }
+      // A brasa só tremula enquanto a pizza está no forno e a cena está na tela
+      if (p > forno[0] && visivel && !quadro) quadro = requestAnimationFrame(tremer);
     }
     function tremer() {
-      if (!tremendo) return;
+      quadro = 0;
+      if (!visivel || estado.p <= forno[0]) return;
       pizza.desenhar(estado.p, performance.now() / 1000);
       quadro = requestAnimationFrame(tremer);
     }
+    new IntersectionObserver(function (en) {
+      visivel = en[0].isIntersecting;
+      if (!visivel && quadro) { cancelAnimationFrame(quadro); quadro = 0; }
+      if (visivel) render();
+    }).observe(canvas);
 
     gsap.to(estado, {
       p: 1,
@@ -480,8 +534,6 @@
         end: '+=420%',
         pin: '.pizza__palco',
         scrub: 0.6,
-        onLeave: function () { tremendo = false; },
-        onLeaveBack: function () { tremendo = false; },
       },
     });
     render();
@@ -508,38 +560,17 @@
     lista.setAttribute('tabindex', '0');
     lista.setAttribute('aria-label', 'As cinco etapas da Pizza Castelões');
 
-    var estados = [0.16, 0.385, 0.595, 0.79, 1];
-    var telas = passos.map(function (passo) {
-      var c = document.createElement('canvas');
-      c.className = 'passo__canvas';
-      c.setAttribute('aria-hidden', 'true');
-      passo.insertBefore(c, passo.firstChild);
-      return c;
+    passos.forEach(function (passo, i) {
+      var img = new Image();
+      img.className = 'passo__img';
+      img.src = 'img/pizza-etapa-' + (i + 1) + '.webp';
+      img.alt = '';
+      img.width = 720;
+      img.height = 720;
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      passo.insertBefore(img, passo.firstChild);
     });
-
-    var desenhado = false;
-    function desenharTudo() {
-      if (desenhado) return;
-      desenhado = true;
-      var largura = telas[0].getBoundingClientRect().width || 320;
-      var fonte = document.createElement('canvas');
-      var pizza = window.PizzaCasteloes.criar(fonte, { tamanho: largura, dprMax: 2 });
-      pizza.preparar();
-      telas.forEach(function (c, i) {
-        pizza.desenhar(estados[i], 0);
-        c.width = fonte.width;
-        c.height = fonte.height;
-        c.getContext('2d').drawImage(fonte, 0, 0);
-      });
-    }
-    if ('IntersectionObserver' in window) {
-      var obs = new IntersectionObserver(function (en) {
-        if (en[0].isIntersecting) { desenharTudo(); obs.disconnect(); }
-      }, { rootMargin: '400px 0px' });
-      obs.observe(secao);
-    } else {
-      desenharTudo();
-    }
   }
 
   /* ---------- Início ---------- */

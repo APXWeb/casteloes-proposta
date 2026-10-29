@@ -143,7 +143,7 @@ ol, ul { padding: 0; list-style: none; }
   border-bottom: 1px solid rgba(230, 215, 188, 0.08);
   transition: background-color 0.4s;
 }
-@supports (backdrop-filter: blur(1px)) {
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
   .barra { backdrop-filter: blur(14px) saturate(1.2); -webkit-backdrop-filter: blur(14px) saturate(1.2); }
 }
 
@@ -332,7 +332,7 @@ ol, ul { padding: 0; list-style: none; }
   color: #2b1c13;
 }
 /* A mesma palavra, acesa pela brasa, por cima */
-.abertura__nome::after,
+.abertura__aceso,
 .abertura__ano span::after {
   content: attr(data-texto);
   position: absolute;
@@ -349,7 +349,7 @@ ol, ul { padding: 0; list-style: none; }
   position: absolute;
   z-index: 2;
   left: 50%;
-  bottom: clamp(70px, 15vh, 150px);
+  bottom: clamp(170px, 29vh, 290px);
   transform: translateX(-50%);
   font-family: var(--serif);
   font-style: italic;
@@ -477,7 +477,7 @@ ol, ul { padding: 0; list-style: none; }
   transform-origin: top;
   transform: scaleY(var(--progresso, 1));
 }
-.js .linha::after { --progresso: 0; }
+.js .linha { --progresso: 0; }
 
 .linha__item {
   position: relative;
@@ -738,13 +738,6 @@ html:not(.js) .linha__item::before {
   display: block;
   margin-bottom: 6px;
 }
-.passo__canvas {
-  display: none;
-  width: 100%;
-  aspect-ratio: 1;
-  margin-bottom: 14px;
-}
-.pizza--simples .passo__canvas { display: block; }
 .pizza--simples .passo--destaque h3 { color: var(--brasa-clara); }
 .passos__dica {
   display: none;
@@ -775,9 +768,10 @@ html:not(.js) .linha__item::before {
   background-color: var(--tijolo);
   background-image:
     radial-gradient(ellipse 80% 70% at 20% 30%, rgba(255, 140, 70, 0.16), transparent 70%),
-    radial-gradient(ellipse 90% 80% at 90% 100%, rgba(20, 6, 2, 0.5), transparent 70%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='132' height='56'%3E%3Cg fill='none' stroke='%23280a04' stroke-opacity='.32' stroke-width='2'%3E%3Cpath d='M0 1H132M0 29H132M1 1V29M67 29V56'/%3E%3C/g%3E%3Cg fill='%23ffffff' fill-opacity='.025'%3E%3Crect x='3' y='3' width='62' height='24'/%3E%3Crect x='69' y='31' width='62' height='23'/%3E%3C/g%3E%3C/svg%3E");
-  background-size: 100% 100%, 100% 100%, 132px 56px;
+    radial-gradient(ellipse 90% 80% at 90% 100%, rgba(20, 6, 2, 0.55), transparent 70%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .04 0 0 0 0 .02 0 0 0 .35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='528'%20height='224'%3E%3Crect%20width='528'%20height='224'%20fill='%233b1209'/%3E%3Crect%20x='2.6'%20y='2.6'%20width='126.8'%20height='50.8'%20fill='%2392402a'%20fill-opacity='0.68'%20rx='1.5'/%3E%3Crect%20x='134.0'%20y='2.0'%20width='128.0'%20height='52.0'%20fill='%236c2617'%20fill-opacity='0.77'%20rx='1.5'/%3E%3Crect%20x='265.7'%20y='1.7'%20width='128.6'%20height='52.6'%20fill='%238a3420'%20fill-opacity='0.60'%20rx='1.5'/%3E%3Crect%20x='398.1'%20y='2.1'%20width='127.8'%20height='51.8'%20fill='%237e2f1b'%20fill-opacity='0.71'%20rx='1.5'/%3E%3Crect%20x='69.0'%20y='59.0'%20width='126.0'%20height='50.0'%20fill='%238a3420'%20fill-opacity='0.60'%20rx='1.5'/%3E%3Crect%20x='200.4'%20y='58.4'%20width='127.2'%20height='51.2'%20fill='%2386391f'%20fill-opacity='0.82'%20rx='1.5'/%3E%3Crect%20x='331.9'%20y='57.9'%20width='128.2'%20height='52.2'%20fill='%2386391f'%20fill-opacity='0.80'%20rx='1.5'/%3E%3Crect%20x='464.3'%20y='58.3'%20width='127.4'%20height='51.4'%20fill='%236c2617'%20fill-opacity='0.64'%20rx='1.5'/%3E%3Crect%20x='-63.7'%20y='58.3'%20width='127.4'%20height='51.4'%20fill='%236c2617'%20fill-opacity='0.64'%20rx='1.5'/%3E%3Crect%20x='2.1'%20y='114.1'%20width='127.8'%20height='51.8'%20fill='%2374291a'%20fill-opacity='0.56'%20rx='1.5'/%3E%3Crect%20x='133.9'%20y='113.9'%20width='128.2'%20height='52.2'%20fill='%2386391f'%20fill-opacity='0.93'%20rx='1.5'/%3E%3Crect%20x='266.0'%20y='114.0'%20width='128.0'%20height='52.0'%20fill='%2386391f'%20fill-opacity='0.94'%20rx='1.5'/%3E%3Crect%20x='398.9'%20y='114.9'%20width='126.2'%20height='50.2'%20fill='%237e2f1b'%20fill-opacity='0.93'%20rx='1.5'/%3E%3Crect%20x='67.5'%20y='169.5'%20width='129.0'%20height='53.0'%20fill='%238a3420'%20fill-opacity='0.77'%20rx='1.5'/%3E%3Crect%20x='199.5'%20y='169.5'%20width='129.0'%20height='53.0'%20fill='%237e2f1b'%20fill-opacity='0.93'%20rx='1.5'/%3E%3Crect%20x='332.2'%20y='170.2'%20width='127.6'%20height='51.6'%20fill='%236c2617'%20fill-opacity='0.61'%20rx='1.5'/%3E%3Crect%20x='464.0'%20y='170.0'%20width='128.0'%20height='52.0'%20fill='%236c2617'%20fill-opacity='0.79'%20rx='1.5'/%3E%3Crect%20x='-64.0'%20y='170.0'%20width='128.0'%20height='52.0'%20fill='%236c2617'%20fill-opacity='0.79'%20rx='1.5'/%3E%3C/svg%3E");
+  background-size: 100% 100%, 100% 100%, 260px 260px, 528px 224px;
 }
 .expressao__grade {
   position: relative;
@@ -1223,12 +1217,124 @@ html:not(.js) .linha__item::before {
   cursor: pointer;
 }
 
+
+/* ---------- Costuras entre as cenas ---------- */
+
+/* origem escurece até o fundo do forno da cena da pizza */
+.origem::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 180px;
+  background: linear-gradient(to bottom, transparent, var(--forno));
+  pointer-events: none;
+}
+/* a fumaça do forno desce sobre a parede de tijolo */
+.expressao::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 220px;
+  background: linear-gradient(var(--forno), rgba(15, 10, 7, 0.6) 35%, transparent);
+  pointer-events: none;
+}
+/* o cardápio é uma folha de papel sobre a parede: borda picotada e sombra */
+.cardapio {
+  z-index: 1;
+  box-shadow: 0 -24px 50px -18px rgba(0, 0, 0, 0.55), 0 24px 50px -18px rgba(0, 0, 0, 0.55);
+}
+.cardapio::before,
+.cardapio::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 12px;
+  background: var(--papel);
+  -webkit-mask: radial-gradient(circle at 8px 0, transparent 6px, #000 6.5px) 0 0 / 16px 12px repeat-x;
+  mask: radial-gradient(circle at 8px 0, transparent 6px, #000 6.5px) 0 0 / 16px 12px repeat-x;
+  pointer-events: none;
+}
+.cardapio::before { top: -11px; transform: scaleY(-1); }
+.cardapio::after { bottom: -11px; background: #dac7a3; }
+/* salão começa na sombra do papel e termina na mesma cor da visita */
+.salao {
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.35), transparent 220px),
+    linear-gradient(to bottom, transparent 70%, var(--fuligem-2)),
+    radial-gradient(ellipse 60% 50% at 80% 10%, rgba(255, 170, 90, 0.08), transparent 70%),
+    var(--fuligem);
+}
+.visita {
+  border-top: 0;
+  background: linear-gradient(to bottom, var(--fuligem-2) 80%, var(--forno));
+}
+
+/* ---------- Tipografia: quebras de linha ---------- */
+
+.expressao__frase,
+.linha__titulo,
+.pizza__titulo,
+.visita__titulo,
+.origem__titulo,
+.carro-chefe__nome { text-wrap: balance; }
+.abertura__sub,
+.mapa__texto,
+.linha__item p,
+.passo p,
+.salao__texto,
+.expressao__texto { text-wrap: pretty; }
+.abertura__sub { max-width: 44ch; }
+
+/* ---------- Cardápio sem preços preenchidos ---------- */
+
+.sem-preco .item__guia,
+.sem-preco > .preco,
+.item.sem-preco .preco { display: none; }
+.item.sem-preco { grid-template-columns: 1fr; }
+
+/* ---------- Salão: a quarta foto fecha a galeria em Z ---------- */
+
+.galeria__d {
+  grid-column: 2 / span 6;
+  grid-row: 3;
+  aspect-ratio: 3 / 2;
+  margin-top: 0;
+}
+
+/* ---------- Visita: texto e botão num canto, a placa à vista ---------- */
+
+.mapa__foto::after {
+  background: linear-gradient(to top, rgba(10, 6, 4, 0.95) 0%, rgba(10, 6, 4, 0.82) 34%, rgba(10, 6, 4, 0.15) 68%, transparent);
+}
+.mapa__capa {
+  place-content: end start;
+  justify-items: start;
+  text-align: left;
+  padding: 28px 32px;
+}
+.mapa__texto { color: var(--creme); margin: 0; }
+
+/* ---------- Foto ampliada: o botão Fechar sempre na tela ---------- */
+
+.ampliar { padding-top: 60px; max-height: 100dvh; }
+.ampliar img { max-height: calc(100dvh - 150px); }
+.ampliar__fechar { top: 0; background: rgba(15, 10, 7, 0.85); }
+
+/* ---------- Etapas da pizza como imagens (celular e movimento reduzido) ---------- */
+
+.passo__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  margin-bottom: 14px;
+}
+
 /* =========================================================
    Telas médias
    ========================================================= */
 
 @media (max-width: 1180px) {
-  .barra { grid-template-columns: auto 1fr auto auto; }
   .barra__tel { display: none; }
   .barra__nav { gap: 18px; }
 }
@@ -1240,9 +1346,14 @@ html:not(.js) .linha__item::before {
   .barra__ligar { display: none; }
   .barra__info { justify-self: end; }
   .barra__menu { display: block; }
+  html { scroll-padding-bottom: calc(64px + env(safe-area-inset-bottom) + 16px); }
   .barra__nav {
     position: fixed;
     inset: var(--barra-altura) 0 auto 0;
+    justify-self: stretch;
+    width: auto;
+    max-height: calc(100svh - var(--barra-altura) - 64px);
+    overflow-y: auto;
     flex-direction: column;
     gap: 0;
     padding: 8px var(--lateral) 24px;
@@ -1268,6 +1379,14 @@ html:not(.js) .linha__item::before {
     border-bottom: 1px solid rgba(230, 215, 188, 0.08);
   }
   .barra__nav a::after { display: none; }
+  .barra__nav.aberto::before {
+    content: '';
+    position: fixed;
+    inset: var(--barra-altura) 0 0 0;
+    z-index: -1;
+    background: rgba(10, 6, 4, 0.55);
+    pointer-events: none;
+  }
 
   .origem__grade { display: block; }
   .origem__lateral { position: static; }
@@ -1284,6 +1403,7 @@ html:not(.js) .linha__item::before {
   .visita__info,
   .mapa { grid-column: 1 / -1; }
   .mapa { position: relative; top: 0; margin-top: 48px; aspect-ratio: 4 / 3; }
+  .galeria__d { grid-column: 1 / span 8; }
 
   .rodape__colunas { grid-template-columns: 1fr 1fr; }
   .rodape__creditos { grid-column: 1 / -1; }
@@ -1318,6 +1438,43 @@ html:not(.js) .linha__item::before {
   .doca__item svg { width: 20px; height: 20px; fill: currentColor; }
   .doca__item--ligar { background: var(--brasa); color: var(--forno); }
   .doca__item:active { opacity: 0.8; }
+}
+
+/* =========================================================
+   Tablet: reorganiza em duas colunas, sem esticar o celular
+   ========================================================= */
+
+@media (min-width: 641px) and (max-width: 1023px) {
+  .abertura__boca { width: min(118vw, 1000px); }
+  .origem__lateral {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: end;
+  }
+  .origem__foto { margin-top: 0; }
+  .linha__item {
+    max-width: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 32px;
+    align-content: start;
+  }
+  .linha__item > p,
+  .linha__item > h3 { grid-column: 1; }
+  .linha__item > figure {
+    grid-column: 2;
+    grid-row: 1 / span 4;
+    margin-top: 0;
+    width: 100%;
+  }
+  .visita__info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 32px;
+  }
+  .visita__info > * { grid-column: 1; }
+  .visita__info .horario { grid-column: 2; grid-row: 1 / span 5; margin-top: 0; }
 }
 
 /* =========================================================
@@ -1365,9 +1522,34 @@ html:not(.js) .linha__item::before {
   .galeria__b,
   .galeria__d { margin: 0; aspect-ratio: 4 / 3; }
   .galeria__c { aspect-ratio: 4 / 3; }
+  .galeria__b,
+  .galeria__c { align-self: stretch; }
 
   .visita__acoes .botao { flex: 1 1 100%; }
   .rodape__colunas { grid-template-columns: 1fr; }
+  .mapa__capa { padding: 20px; }
+}
+
+@media (max-width: 640px) and (max-height: 780px) {
+  .pizza--simples .pizza__intro { display: none; }
+  .pizza--simples .passo__img { width: 78%; margin-inline: auto; }
+  .pizza--simples .pizza__palco { padding-top: 72px; }
+}
+
+@media (max-width: 400px) {
+  .barra .status { white-space: nowrap; font-size: 0.76rem; }
+  .barra__nome { font-size: 1.2rem; }
+  .barra__end { font-size: 0.72rem; }
+  .expressao__frase { font-size: min(12.2vw, 3rem); }
+  .expressao__linha { white-space: nowrap; }
+}
+
+/* Celular deitado: barra e doca mais baixas */
+@media (max-width: 1023px) and (max-height: 500px) {
+  :root { --barra-altura: 52px; }
+  .doca__item { min-height: 48px; }
+  body { padding-bottom: calc(48px + env(safe-area-inset-bottom)); }
+  .abertura__palco { height: auto; min-height: calc(100svh - 48px); }
 }
 
 /* =========================================================
